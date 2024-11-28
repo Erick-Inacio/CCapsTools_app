@@ -15,7 +15,7 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>    
-        <dozer.version>6.5.0</dozer.version>
+        <dozer.version>7.0.0</dozer.version>
         <java.version>21</java.version>
 		<mysql.version>8.0.33</mysql.version>
     </properties>
@@ -25,6 +25,20 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+    
+
+        <!-- Dependência para JAXB -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.2</version>
         </dependency>
 
         <dependency>
@@ -60,7 +74,7 @@
 
         <!-- Hibernate Core (opcional, já incluído no Spring Data JPA) -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>6.2.7.Final</version>
         </dependency>

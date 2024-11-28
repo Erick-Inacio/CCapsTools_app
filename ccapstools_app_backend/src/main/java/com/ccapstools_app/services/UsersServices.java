@@ -13,8 +13,6 @@ import com.ccapstools_app.mapper.DozerMapper;
 import com.ccapstools_app.models.Users;
 import com.ccapstools_app.repositories.UsersRepository;
 
-import jakarta.annotation.Resource;
-
 @Service
 public class UsersServices {
     private Logger logger = Logger.getLogger(UsersServices.class.getName());
@@ -22,30 +20,52 @@ public class UsersServices {
     @Autowired
     UsersRepository usersRepository;
 
-    public List<UsersDTO> findAll(){
+    public List<UsersDTO> findAll() {
         logger.info("find all users");
 
         return DozerMapper.parseListObjects(usersRepository.findAll(), UsersDTO.class);
     }
 
-    public UsersDTO findById(Long id){
+    public UsersDTO findById(Long id) {
         logger.info("find user by id");
-        
+
         var entity = usersRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this id: " + id));
-        
-        return DozerMapper.parseObject(entity, UsersDTO.class);        
+
+        return DozerMapper.parseObject(entity, UsersDTO.class);
     }
 
-    public UsersDTO create(UsersVO usersVo){
+    public UsersDTO create(UsersVO usersVo) {
         logger.info("create user");
 
         Users users = DozerMapper.parseObject(usersVo, Users.class);
         return DozerMapper.parseObject(usersRepository.save(users), UsersDTO.class);
     }
 
-    
+    public UsersDTO update(UsersVO updatedUsersVo) {
+        logger.info("update user");
 
+        Users existingUser = usersRepository.findById(updatedUsersVo.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No records found for this id: " + updatedUsersVo.getId() + "\n\n"));
 
+        existingUser.setName(updatedUsersVo.getName());
+        existingUser.setEmail(updatedUsersVo.getEmail());
+        existingUser.setUserType(updatedUsersVo.getUserType());
+        existingUser.setRa(updatedUsersVo.getRa());
+
+        Users updatedUsers = usersRepository.save(existingUser);
+
+        return DozerMapper.parseObject(updatedUsers, UsersDTO.class);
+    }
+
+    public void delete(Long id) {
+        logger.info("delete user");
+
+        var entity = usersRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this id: " + id));
+
+        usersRepository.delete(entity);
+    }
 
 }

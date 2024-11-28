@@ -21,16 +21,16 @@ public class Users implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "email")
     private String email;
 
     @Enumerated(jakarta.persistence.EnumType.STRING)
-    @Column(name = "user_type")
+    @Column(name = "user_type", nullable = false)
     private UserType userType;
 
     @Column(name = "ra")
@@ -39,11 +39,11 @@ public class Users implements Serializable{
     public Users() {
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -79,15 +79,17 @@ public class Users implements Serializable{
         this.ra = ra;
     }
 
+    
+
     @Override
     public int hashCode() {
-        final int PRIME = 31;
+        final int prime = 31;
         int result = 1;
-        result = PRIME * result + (id == null ? 0 : id.hashCode());
-        result = PRIME * result + (name == null ? 0 : name.hashCode());
-        result = PRIME * result + (email == null ? 0 : email.hashCode());
-        result = PRIME * result + (userType == null ? 0 : userType.hashCode());
-        result = PRIME * result + (ra == null ? 0 : ra.hashCode());
+        result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((email == null) ? 0 : email.hashCode());
+        result = prime * result + ((userType == null) ? 0 : userType.hashCode());
+        result = prime * result + ((ra == null) ? 0 : ra.hashCode());
         return result;
     }
 
@@ -96,14 +98,11 @@ public class Users implements Serializable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Users users = (Users) o;
-        return Objects.equals(id, users.id) &&
+        return id == users.id &&
                 Objects.equals(name, users.name) &&
                 Objects.equals(email, users.email) &&
                 userType == users.userType &&
                 Objects.equals(ra, users.ra);
-    }
-
-
-    
+    }   
 
 }

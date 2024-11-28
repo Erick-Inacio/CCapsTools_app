@@ -3,6 +3,8 @@ package com.ccapstools_app.data.vo;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.ccapstools_app.data.enums.UserType;
+
 public class UsersVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -11,7 +13,7 @@ public class UsersVO implements Serializable {
     private String name;
     private String email;
     private String ra;
-    private String userType;
+    private UserType userType;
 
     public UsersVO() {
     }
@@ -48,13 +50,13 @@ public class UsersVO implements Serializable {
         this.ra = ra;
     }
 
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
+    public void setUserType(UserType userType) {
         this.userType = userType;
     }
+
+    public UserType getUserType() {
+        return userType;
+    }   
 
     @Override
     public int hashCode() {
@@ -78,6 +80,7 @@ public class UsersVO implements Serializable {
             Objects.equals(email, that.email) &&
             Objects.equals(ra, that.ra) &&
             Objects.equals(userType, that.userType);
-    }   
+    }
+    
 
 }
