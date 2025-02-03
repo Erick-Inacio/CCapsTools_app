@@ -11,5 +11,19 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
     show-sql: true
-    
 
+server:
+  address: 192.168.31.20
+  port: 8080
+
+firebase:
+  credentials: ${FIREBASE_CREDENTIALS}
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+
+# 🔥 Configuração para validar tokens do Firebase
+spring.security.oauth2.resourceserver.jwt.issuer-uri: https://securetoken.google.com/setec-front
+spring.security.oauth2.resourceserver.jwt.audiences: setec-front
