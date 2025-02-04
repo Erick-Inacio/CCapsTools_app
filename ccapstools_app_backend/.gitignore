@@ -36,4 +36,4 @@ firebase-service-account.json
 *.json
 A:\CCapsTools_app\ccapstools_app_backend\src\main\resources\application.yml
 *.yml
-
+*.cmd

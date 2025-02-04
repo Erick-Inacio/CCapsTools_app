@@ -1,1 +1,0 @@
-#Pasta para versionar o frontend do projeto "APP SETEC"
