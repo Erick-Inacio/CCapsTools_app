@@ -2,7 +2,7 @@ package com.ccapstools_app.data.dto;
 
 import java.util.Objects;
 
-import com.ccapstools_app.utils.enums.Roles;
+import com.ccapstools_app.utils.enums.Relationship;
 
 public class SpeakerDTO extends UserDTO{
     
@@ -10,7 +10,7 @@ public class SpeakerDTO extends UserDTO{
 
     private Long id;
     private String socialMedia;
-    private Roles role;
+    private Relationship Relationship;
     private String company;
     private String position;
     private String description;
@@ -38,12 +38,12 @@ public class SpeakerDTO extends UserDTO{
         this.socialMedia = socialMedia;
     }
 
-    public Roles getRelationship() {
-        return role;
+    public Relationship getRelationship() {
+        return Relationship;
     }
 
-    public void setRelationship(Roles role) {
-        this.role = role;
+    public void setRelationship(Relationship Relationship) {
+        this.Relationship = Relationship;
     }
 
     public String getCompany() {
@@ -76,7 +76,7 @@ public class SpeakerDTO extends UserDTO{
         int result = super.hashCode();
         result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + ((socialMedia == null) ? 0 : socialMedia.hashCode());
-        result = prime * result + ((role == null) ? 0 : role.hashCode());
+        result = prime * result + ((Relationship == null) ? 0 : Relationship.hashCode());
         result = prime * result + ((company == null) ? 0 : company.hashCode());
         result = prime * result + ((position == null) ? 0 : position.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
@@ -90,7 +90,7 @@ public class SpeakerDTO extends UserDTO{
         SpeakerDTO that = (SpeakerDTO) o;
         return id == that.id &&
                 Objects.equals(socialMedia, that.socialMedia) &&
-                role == that.role &&
+                Relationship == that.Relationship &&
                 Objects.equals(company, that.company) &&
                 Objects.equals(position, that.position) &&
                 Objects.equals(description, that.description);

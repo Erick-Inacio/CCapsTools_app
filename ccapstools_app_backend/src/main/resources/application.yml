@@ -6,11 +6,16 @@ spring:
     password: admin
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
     show-sql: true
+  flyway:
+    ignore-migration-patterns: "*:missing"
+    enabled: true
+    baseline-on-migrate: true  # 🔹 Se já houver tabelas no banco, evita erros ao rodar Flyway
+    locations: classpath:db/migration
 
 server:
   address: 192.168.31.20

@@ -17,7 +17,8 @@
     <properties>    
         <dozer.version>7.0.0</dozer.version>
         <java.version>21</java.version>
-        <mysql.version>8.0.33</mysql.version>
+		<mysql.version>9.1.0</mysql.version>
+        <springdoc.version>2.7.0</springdoc.version>
     </properties>
 
     <dependencies>
@@ -26,6 +27,24 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
+
+        <!-- Spring doc -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+
+        <!-- Migrations: Flyway -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+		</dependency>
 
         <dependency>
             <groupId>io.github.cdimascio</groupId>
@@ -82,11 +101,10 @@
 
         <!-- MySQL Driver -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
-            <version>${mysql.version}</version>
-        </dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
         <!-- Hibernate Core (opcional, já incluído no Spring Data JPA) -->
         <dependency>
@@ -116,6 +134,28 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+				<groupId>org.flywaydb</groupId>
+			   <artifactId>flyway-maven-plugin</artifactId>
+			   <configuration>
+			      <url>jdbc:mysql://localhost:3306/ccapstools_app_backend?useTimezone=true&amp;serverTimeZone=UTC&amp;useSSL=false</url>
+			      <user>root</user>
+			      <password>admin</password>
+			   </configuration>
+			   <dependencies>
+			      <dependency>
+			         <groupId>com.mysql</groupId>
+			         <artifactId>mysql-connector-j</artifactId>
+			         <version>${mysql.version}</version>
+			         <exclusions>
+			            <exclusion>
+			               <artifactId>slf4j-api</artifactId>
+			               <groupId>org.slf4j</groupId>
+			            </exclusion>
+			         </exclusions>
+			      </dependency>
+			   </dependencies>
+			</plugin>
         </plugins>
     </build>
 </project>
