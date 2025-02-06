@@ -4,6 +4,13 @@ spring:
     url: jdbc:mysql://localhost:3306/ccapstools_app_backend?useTimezone=true&serverTimeZone=UTC
     username: root
     password: admin
+  # 🔥 Configuração para validar tokens do Firebase
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://securetoken.google.com/setec-front
+          audiences: setec-front
   jpa:
     hibernate:
       ddl-auto: none
@@ -14,22 +21,25 @@ spring:
   flyway:
     ignore-migration-patterns: "*:missing"
     enabled: true
-    baseline-on-migrate: true  # 🔹 Se já houver tabelas no banco, evita erros ao rodar Flyway
+    baseline-on-migrate: true # 🔹 Se já houver tabelas no banco, evita erros ao rodar Flyway
     locations: classpath:db/migration
 
 server:
-  #address: 192.168.31.20
-  address: 192.168.31.109
+  address: 192.168.31.20
+  #address: 192.168.31.109
   port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 firebase:
   credentials: ${FIREBASE_CREDENTIALS}
 
 logging:
   level:
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-
-# 🔥 Configuração para validar tokens do Firebase
-spring.security.oauth2.resourceserver.jwt.issuer-uri: https://securetoken.google.com/setec-front
-spring.security.oauth2.resourceserver.jwt.audiences: setec-front
+    org:
+      springframework:
+        security: DEBUG
+        oauth2: DEBUG
