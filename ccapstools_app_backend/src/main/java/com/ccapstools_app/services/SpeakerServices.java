@@ -1,17 +1,22 @@
 package com.ccapstools_app.services;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ccapstools_app.data.dto.SpeakerDTO;
+import com.ccapstools_app.data.dto.UserDTO;
 import com.ccapstools_app.data.vo.SpeakerVO;
 import com.ccapstools_app.exceptions.ResourceNotFoundException;
 import com.ccapstools_app.mapper.DozerMapper;
 import com.ccapstools_app.models.Speaker;
+import com.ccapstools_app.models.User;
 import com.ccapstools_app.repositories.SpeakerRepository;
+import com.google.firebase.database.DatabaseException;
 
 @Service
 public class SpeakerServices {
@@ -20,10 +25,24 @@ public class SpeakerServices {
     @Autowired
     SpeakerRepository speakerRepository;
 
+    @Autowired
+    UserServices userService;
+
     public List<SpeakerDTO> findAll() {
         logger.info("find all Speaker");
 
-        return DozerMapper.parseListObjects(speakerRepository.findAll(), SpeakerDTO.class);
+        List<Speaker> speakers = speakerRepository.findAll();
+        if (speakers == null || speakers.isEmpty()) {
+            logger.warning("No speakers found");
+            return Collections.emptyList();
+        }
+
+        try {
+            return DozerMapper.parseListObjects(speakers, SpeakerDTO.class);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error parsing speakers to DTOs", e);
+            return Collections.emptyList();
+        }
     }
 
     public SpeakerDTO findById(Long id) {
@@ -36,35 +55,81 @@ public class SpeakerServices {
     }
 
     public SpeakerDTO create(SpeakerVO speakerVO) {
-        logger.info("create Speaker");
-
-        Speaker speaker = DozerMapper.parseObject(speakerVO, Speaker.class);
-        return DozerMapper.parseObject(speakerRepository.save(speaker), SpeakerDTO.class);
+        logger.info("Criando Speaker...");
+    
+        if (speakerVO == null) {
+            throw new IllegalArgumentException("SpeakerVO não pode ser nulo");
+        }
+    
+        if (speakerVO.getUser() == null) {
+            throw new IllegalArgumentException("ID do usuário no SpeakerVO não pode ser nulo");
+        }
+    
+        // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
+        UserDTO userDTO = userService.findById(speakerVO.getUser());
+        User user = DozerMapper.parseObject(userDTO, User.class);
+    
+        // 🔥 Criar Speaker manualmente (sem DozerMapper no user)
+        Speaker speaker = new Speaker();
+        speaker.setCompany(speakerVO.getCompany());
+        speaker.setPosition(speakerVO.getPosition());
+        speaker.setBio(speakerVO.getBio());
+        speaker.setSocialMedia(speakerVO.getSocialMedia());
+    
+        // 🔥 Definir manualmente o usuário no speaker
+        speaker.setUser(user);
+    
+        // 🔥 Salvar no banco de dados
+        Speaker savedSpeaker = speakerRepository.save(speaker);
+    
+        return DozerMapper.parseObject(savedSpeaker, SpeakerDTO.class);
     }
+    
+    
 
     public SpeakerDTO update(SpeakerVO updatedSpeakerVo) {
-        logger.info("update Speaker");
+        logger.info("Atualizando Speaker...");
+
+        if (updatedSpeakerVo == null || updatedSpeakerVo.getId() == null) {
+            throw new IllegalArgumentException("SpeakerVO inválido para atualização.");
+        }
 
         Speaker existingSpeaker = speakerRepository.findById(updatedSpeakerVo.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("No records found for this id: "
+                .orElseThrow(() -> new ResourceNotFoundException("Speaker não encontrado para o ID: "
                         + updatedSpeakerVo.getId()));
 
-        existingSpeaker.setSocialMedia(updatedSpeakerVo.getSocialMedia());
-        existingSpeaker.setCompany(updatedSpeakerVo.getCompany());
-        existingSpeaker.setPosition(updatedSpeakerVo.getPosition());
-        existingSpeaker.setBio(updatedSpeakerVo.getBio());
-    
-        Speaker updatedSpeaker = speakerRepository.save(existingSpeaker);
+        // Atualiza apenas se houver um novo User associado
+        if (updatedSpeakerVo.getUser() != null && updatedSpeakerVo.getUser() != null) {
+            try {
+                UserDTO existingUserDTO = userService.findById(updatedSpeakerVo.getUser());
+                User user = DozerMapper.parseObject(existingUserDTO, User.class);
+                existingSpeaker.setUser(user);
+            } catch (ResourceNotFoundException e) {
+                logger.log(Level.WARNING, "Usuário não encontrado para o ID: {0}, mantendo usuário atual.",
+                        updatedSpeakerVo.getUser());
+            }
+        }
 
-        return DozerMapper.parseObject(updatedSpeaker, SpeakerDTO.class);
-    }
+        // Atualiza apenas os campos não nulos
+        if (updatedSpeakerVo.getSocialMedia() != null) {
+            existingSpeaker.setSocialMedia(updatedSpeakerVo.getSocialMedia());
+        }
+        if (updatedSpeakerVo.getCompany() != null) {
+            existingSpeaker.setCompany(updatedSpeakerVo.getCompany());
+        }
+        if (updatedSpeakerVo.getPosition() != null) {
+            existingSpeaker.setPosition(updatedSpeakerVo.getPosition());
+        }
+        if (updatedSpeakerVo.getBio() != null) {
+            existingSpeaker.setBio(updatedSpeakerVo.getBio());
+        }
 
-    public void delete(Long id) {
-        logger.info("delete Speaker");
-
-        Speaker speaker = speakerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No records found for this id: " + id));
-
-        speakerRepository.delete(speaker);
+        try {
+            Speaker updatedSpeaker = speakerRepository.save(existingSpeaker);
+            return DozerMapper.parseObject(updatedSpeaker, SpeakerDTO.class);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Erro ao salvar Speaker atualizado", e);
+            throw new DatabaseException("Erro ao atualizar Speaker no banco de dados.");
+        }
     }
 }

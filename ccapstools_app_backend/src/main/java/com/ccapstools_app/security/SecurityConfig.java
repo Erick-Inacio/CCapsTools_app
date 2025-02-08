@@ -27,7 +27,7 @@ public class SecurityConfig {
                                                         "/api/test/**")
                                         .permitAll()
                                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                        .requestMatchers("/api/user/**").hasAnyRole("ADMIN", "STUDENT")
+                                        .requestMatchers("/api/user/**").hasAnyRole("ADMIN", "STUDENT", "SPEAKER")
                                         .requestMatchers("/speaker/**").hasAnyRole("ADMIN", "SPEAKER")
                                         .anyRequest().authenticated())
                         .addFilterBefore(firebaseAuthenticationFilter,

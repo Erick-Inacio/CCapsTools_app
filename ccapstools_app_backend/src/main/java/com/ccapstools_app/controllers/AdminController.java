@@ -1,7 +1,6 @@
 package com.ccapstools_app.controllers;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    Logger logger = Logger.getLogger(AdminController.class.getName());
+    // Logger logger = Logger.getLogger(AdminController.class.getName());
 
     @PutMapping("/set-Role/{uid}")
     public String setUserRole(@PathVariable String uid, @RequestParam Role role) {
