@@ -97,6 +97,6 @@ public class SpeakerVO implements Serializable {
                 Objects.equals(bio, other.bio) &&
                 Objects.equals(user, other.user) &&
                 Objects.equals(socialMedia, other.socialMedia);
-    }
-
+    }   
+    
 }

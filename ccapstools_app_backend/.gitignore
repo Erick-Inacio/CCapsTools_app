@@ -37,3 +37,4 @@ firebase-service-account.json
 A:\CCapsTools_app\ccapstools_app_backend\src\main\resources\application.yml
 *.yml
 *.cmd
+.env
