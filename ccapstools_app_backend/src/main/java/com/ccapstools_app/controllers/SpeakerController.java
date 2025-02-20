@@ -58,6 +58,21 @@ public class SpeakerController {
         }
     }
 
+    @Operation(summary = "Busca um palestrante pelo id do usuário", description = "Retorna um Palestrante cadastrado no sistema")
+    @GetMapping(value = "/findUser/{userId}", produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SpeakerDTO> findSpeakerByUserId(@PathVariable Long userId) {
+
+        if(userId == null) {
+            return null;
+        }
+        
+        try {
+            return ResponseEntity.ok(speakerServices.findSpeakerByUserId(userId));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @Operation(summary = "Cria um novo palestrante", description = "Cria um novo Palestrante no sistema")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SpeakerDTO> create(@RequestBody SpeakerVO speakerVO) {

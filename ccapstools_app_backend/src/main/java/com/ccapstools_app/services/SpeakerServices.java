@@ -18,6 +18,10 @@ import com.ccapstools_app.models.User;
 import com.ccapstools_app.repositories.SpeakerRepository;
 import com.google.firebase.database.DatabaseException;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
+
 @Service
 public class SpeakerServices {
     private static final Logger logger = Logger.getLogger(SpeakerServices.class.getName());
@@ -27,6 +31,9 @@ public class SpeakerServices {
 
     @Autowired
     UserServices userService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public List<SpeakerDTO> findAll() {
         logger.info("find all Speaker");
@@ -54,38 +61,52 @@ public class SpeakerServices {
         return DozerMapper.parseObject(speaker, SpeakerDTO.class);
     }
 
+    public SpeakerDTO findSpeakerByUserId(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
+        try {
+            Speaker speaker = speakerRepository.findSpeakerByUserId(userId);
+
+            return DozerMapper.parseObject(speaker, SpeakerDTO.class);
+        } catch (NoResultException e) {
+            throw new ResourceNotFoundException("Speaker not found for user ID: " + userId);
+        } catch (Exception e) {
+            throw new DatabaseException("An error occurred while retrieving the speaker", e);
+        }
+    }
+
     public SpeakerDTO create(SpeakerVO speakerVO) {
         logger.info("Criando Speaker...");
-    
+
         if (speakerVO == null) {
             throw new IllegalArgumentException("SpeakerVO não pode ser nulo");
         }
-    
+
         if (speakerVO.getUser() == null) {
             throw new IllegalArgumentException("ID do usuário no SpeakerVO não pode ser nulo");
         }
-    
+
         // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
         UserDTO userDTO = userService.findById(speakerVO.getUser());
         User user = DozerMapper.parseObject(userDTO, User.class);
-    
+
         // 🔥 Criar Speaker manualmente (sem DozerMapper no user)
         Speaker speaker = new Speaker();
         speaker.setCompany(speakerVO.getCompany());
         speaker.setPosition(speakerVO.getPosition());
         speaker.setBio(speakerVO.getBio());
         speaker.setSocialMedia(speakerVO.getSocialMedia());
-    
+
         // 🔥 Definir manualmente o usuário no speaker
         speaker.setUser(user);
-    
+
         // 🔥 Salvar no banco de dados
         Speaker savedSpeaker = speakerRepository.save(speaker);
-    
+
         return DozerMapper.parseObject(savedSpeaker, SpeakerDTO.class);
     }
-    
-    
 
     public SpeakerDTO update(SpeakerVO updatedSpeakerVo) {
         logger.info("Atualizando Speaker...");
@@ -132,4 +153,5 @@ public class SpeakerServices {
             throw new DatabaseException("Erro ao atualizar Speaker no banco de dados.");
         }
     }
+
 }
