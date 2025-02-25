@@ -89,7 +89,7 @@ public class SpeakerServices {
         }
 
         // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
-        UserDTO userDTO = userService.findById(speakerVO.getUser());
+        UserDTO userDTO = userService.findById(speakerVO.getUser().getId());
         User user = DozerMapper.parseObject(userDTO, User.class);
 
         // 🔥 Criar Speaker manualmente (sem DozerMapper no user)
@@ -98,6 +98,7 @@ public class SpeakerServices {
         speaker.setPosition(speakerVO.getPosition());
         speaker.setBio(speakerVO.getBio());
         speaker.setSocialMedia(speakerVO.getSocialMedia());
+        speaker.setBio(speakerVO.getBio());
 
         // 🔥 Definir manualmente o usuário no speaker
         speaker.setUser(user);
@@ -122,7 +123,7 @@ public class SpeakerServices {
         // Atualiza apenas se houver um novo User associado
         if (updatedSpeakerVo.getUser() != null && updatedSpeakerVo.getUser() != null) {
             try {
-                UserDTO existingUserDTO = userService.findById(updatedSpeakerVo.getUser());
+                UserDTO existingUserDTO = userService.findById(updatedSpeakerVo.getUser().getId());
                 User user = DozerMapper.parseObject(existingUserDTO, User.class);
                 existingSpeaker.setUser(user);
             } catch (ResourceNotFoundException e) {

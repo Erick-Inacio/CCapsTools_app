@@ -13,7 +13,7 @@ public class SpeakerDTO implements Serializable{
     private Relationship Relationship;
     private String company;
     private String position;
-    private String description;
+    private String bio;
     private UserDTO user;
     private String socialMedia;
 
@@ -52,12 +52,12 @@ public class SpeakerDTO implements Serializable{
         this.position = position;
     }
 
-    public String getDescription() {
-        return description;
+    public String getBio() {
+        return bio;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
     public UserDTO getUser() {
@@ -84,7 +84,7 @@ public class SpeakerDTO implements Serializable{
         result = prime * result + ((Relationship == null) ? 0 : Relationship.hashCode());
         result = prime * result + ((company == null) ? 0 : company.hashCode());
         result = prime * result + ((position == null) ? 0 : position.hashCode());
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((bio == null) ? 0 : bio.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
         result = prime * result + ((socialMedia == null) ? 0 : socialMedia.hashCode());
         return result;
@@ -100,14 +100,17 @@ public class SpeakerDTO implements Serializable{
         }
         SpeakerDTO other = (SpeakerDTO) obj;
         return Objects.equals(id, other.id) &&
-                Relationship == other.Relationship &&
-                Objects.equals(company, other.company) &&
-                Objects.equals(position, other.position) &&
-                Objects.equals(description, other.description) &&
-                Objects.equals(user, other.user) &&
-                Objects.equals(socialMedia, other.socialMedia);
+               Relationship == other.Relationship &&
+               Objects.equals(company, other.company) &&
+               Objects.equals(position, other.position) &&
+               Objects.equals(bio, other.bio) &&
+               Objects.equals(user, other.user) &&
+               Objects.equals(socialMedia, other.socialMedia);
     }
 
+    
+    
+    
     
 
 }

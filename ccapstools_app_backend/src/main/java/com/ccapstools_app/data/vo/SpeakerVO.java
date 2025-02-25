@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.ccapstools_app.models.User;
 import com.ccapstools_app.utils.enums.SocialMediaEnum;
 
 public class SpeakerVO implements Serializable {
@@ -15,7 +16,7 @@ public class SpeakerVO implements Serializable {
     private String company;
     private String position;
     private String bio;
-    private Long user;
+    private UserVO user;
     private Map<SocialMediaEnum, String> socialMedia = new HashMap<>();
 
     public SpeakerVO() {
@@ -53,11 +54,11 @@ public class SpeakerVO implements Serializable {
         this.bio = bio;
     }
 
-    public Long getUser() {
+    public UserVO getUser() {
         return user;
     }
 
-    public void setUser(Long user) {
+    public void setUser(UserVO user) {
         this.user = user;
     }
 
@@ -83,20 +84,22 @@ public class SpeakerVO implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        SpeakerVO other = (SpeakerVO) o;
-        return Objects.equals(id, other.id) &&
-                Objects.equals(company, other.company) &&
-                Objects.equals(position, other.position) &&
-                Objects.equals(bio, other.bio) &&
-                Objects.equals(user, other.user) &&
-                Objects.equals(socialMedia, other.socialMedia);
-    }   
+        SpeakerVO other = (SpeakerVO) obj;
+        return Objects.equals(id, other.id)
+                && Objects.equals(company, other.company)
+                && Objects.equals(position, other.position)
+                && Objects.equals(bio, other.bio)
+                && Objects.equals(user, other.user)
+                && Objects.equals(socialMedia, other.socialMedia);
+    }
+
+    
     
 }
