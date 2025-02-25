@@ -3,6 +3,9 @@ package com.ccapstools_app.data.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.ccapstools_app.utils.enums.Relationship;
+import com.ccapstools_app.utils.enums.Role;
+
 public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -12,7 +15,8 @@ public class UserDTO implements Serializable {
     private String uid;
     private String email;
     private String ra;
-    private String role;
+    private Relationship Relationship;
+    private Role role;
 
     public UserDTO() {
     }
@@ -38,6 +42,7 @@ public class UserDTO implements Serializable {
     }
 
     public void setUid(String uid) {
+
         this.uid = uid;
     }
 
@@ -57,11 +62,19 @@ public class UserDTO implements Serializable {
         this.ra = ra;
     }
 
-    public String getRole() {
+    public Relationship getRelationship() {
+        return Relationship;
+    }
+
+    public void setRelationship(Relationship relationship) {
+        Relationship = relationship;
+    }
+
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -74,6 +87,7 @@ public class UserDTO implements Serializable {
         result = prime * result + ((uid == null) ? 0 : uid.hashCode());
         result = prime * result + ((email == null) ? 0 : email.hashCode());
         result = prime * result + ((ra == null) ? 0 : ra.hashCode());
+        result = prime * result + ((Relationship == null) ? 0 : Relationship.hashCode());
         result = prime * result + ((role == null) ? 0 : role.hashCode());
         return result;
     }
@@ -84,14 +98,14 @@ public class UserDTO implements Serializable {
             return true;
         if (obj == null || getClass() != obj.getClass())
             return false;
-
-        UserDTO userDTO = (UserDTO) obj;
-        return Objects.equals(id, userDTO.id) &&
-                Objects.equals(name, userDTO.name) &&
-                Objects.equals(uid, userDTO.uid) &&
-                Objects.equals(email, userDTO.email) &&
-                Objects.equals(ra, userDTO.ra) &&
-                Objects.equals(role, userDTO.role);
+        UserDTO other = (UserDTO) obj;
+        return Objects.equals(id, other.id) &&
+                Objects.equals(name, other.name) &&
+                Objects.equals(uid, other.uid) &&
+                Objects.equals(email, other.email) &&
+                Objects.equals(ra, other.ra) &&
+                Relationship == other.Relationship &&
+                role == other.role;
     }
 
 }

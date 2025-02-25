@@ -3,8 +3,10 @@ package com.ccapstools_app.models;
 import java.io.Serializable;
 import java.util.Objects;
 
-import com.ccapstools_app.utils.enums.Roles;
+import com.ccapstools_app.utils.enums.Relationship;
+import com.ccapstools_app.utils.enums.Role;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -16,6 +18,7 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 
 @Entity
+@Schema(description = "Representa um usuário no sistema")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "Users")
 public class User implements Serializable {
@@ -26,27 +29,31 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Schema(description = "Identificador do usuário no firebase")
     @Column(name = "uid", unique = true)
     private String uid;
 
+    @Schema(description = "Nome do usuário", maxLength=150)
     @Column(name = "name")
     private String name;
 
+    @Schema(description = "Email do usuário", maxLength=100)
     @Column(name = "email", unique = true)
     private String email;
 
+    @Schema(description = "Relação do usuário com a Instituição de Ensino")
+    @Enumerated(jakarta.persistence.EnumType.STRING)
+    @Column(name = "Relationship")
+    private Relationship Relationship;
+
+    @Schema(description = "Nivel de Acesso do Usuario")
     @Enumerated(jakarta.persistence.EnumType.STRING)
     @Column(name = "role")
-    private Roles role;
+    private Role role;
 
+    @Schema(description = "RA do aluno", maxLength = 13)
     @Column(name = "ra", unique = true, nullable = true)
     private String ra;
-
-    @Column(name = "admin")
-    private Boolean admin = false;
-
-    @Column(name = "commission")
-    private Boolean commission = false;
 
     public User() {
     }
@@ -83,11 +90,19 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public Roles getRole() {
+    public Relationship getRelationship() {
+        return Relationship;
+    }
+
+    public void setRelationship(Relationship relationship) {
+        Relationship = relationship;
+    }
+
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(Roles role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -99,22 +114,6 @@ public class User implements Serializable {
         this.ra = ra;
     }
 
-    public Boolean getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        this.admin = admin;
-    }
-
-    public Boolean getCommission() {
-        return commission;
-    }
-
-    public void setCommission(Boolean commission) {
-        this.commission = commission;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -123,28 +122,24 @@ public class User implements Serializable {
         result = prime * result + ((uid == null) ? 0 : uid.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((email == null) ? 0 : email.hashCode());
+        result = prime * result + ((Relationship == null) ? 0 : Relationship.hashCode());
         result = prime * result + ((role == null) ? 0 : role.hashCode());
         result = prime * result + ((ra == null) ? 0 : ra.hashCode());
-        result = prime * result + ((admin == null) ? 0 : admin.hashCode());
-        result = prime * result + ((commission == null) ? 0 : commission.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return Objects.equals(id, user.id) &&
                 Objects.equals(uid, user.uid) &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(email, user.email) &&
+                Relationship == user.Relationship &&
                 role == user.role &&
-                Objects.equals(ra, user.ra) &&
-                Objects.equals(admin, user.admin) &&
-                Objects.equals(commission, user.commission);
+                Objects.equals(ra, user.ra);
     }
 
 }
