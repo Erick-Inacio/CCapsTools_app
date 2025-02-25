@@ -13,8 +13,8 @@ import com.ccapstools_app.data.dto.UserDTO;
 import com.ccapstools_app.data.vo.SpeakerVO;
 import com.ccapstools_app.exceptions.ResourceNotFoundException;
 import com.ccapstools_app.mapper.DozerMapper;
-import com.ccapstools_app.models.Speaker;
-import com.ccapstools_app.models.User;
+import com.ccapstools_app.models.users.SpeakerModel;
+import com.ccapstools_app.models.users.UserModel;
 import com.ccapstools_app.repositories.SpeakerRepository;
 import com.google.firebase.database.DatabaseException;
 
@@ -38,7 +38,7 @@ public class SpeakerServices {
     public List<SpeakerDTO> findAll() {
         logger.info("find all Speaker");
 
-        List<Speaker> speakers = speakerRepository.findAll();
+        List<SpeakerModel> speakers = speakerRepository.findAll();
         if (speakers == null || speakers.isEmpty()) {
             logger.warning("No speakers found");
             return Collections.emptyList();
@@ -55,7 +55,7 @@ public class SpeakerServices {
     public SpeakerDTO findById(Long id) {
         logger.info("find Speaker by id");
 
-        Speaker speaker = speakerRepository.findById(id)
+        SpeakerModel speaker = speakerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this id: " + id));
 
         return DozerMapper.parseObject(speaker, SpeakerDTO.class);
@@ -67,7 +67,7 @@ public class SpeakerServices {
         }
 
         try {
-            Speaker speaker = speakerRepository.findSpeakerByUserId(userId);
+            SpeakerModel speaker = speakerRepository.findSpeakerByUserId(userId);
 
             return DozerMapper.parseObject(speaker, SpeakerDTO.class);
         } catch (NoResultException e) {
@@ -90,10 +90,10 @@ public class SpeakerServices {
 
         // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
         UserDTO userDTO = userService.findById(speakerVO.getUser());
-        User user = DozerMapper.parseObject(userDTO, User.class);
+        UserModel user = DozerMapper.parseObject(userDTO, UserModel.class);
 
         // 🔥 Criar Speaker manualmente (sem DozerMapper no user)
-        Speaker speaker = new Speaker();
+        SpeakerModel speaker = new SpeakerModel();
         speaker.setCompany(speakerVO.getCompany());
         speaker.setPosition(speakerVO.getPosition());
         speaker.setBio(speakerVO.getBio());
@@ -103,7 +103,7 @@ public class SpeakerServices {
         speaker.setUser(user);
 
         // 🔥 Salvar no banco de dados
-        Speaker savedSpeaker = speakerRepository.save(speaker);
+        SpeakerModel savedSpeaker = speakerRepository.save(speaker);
 
         return DozerMapper.parseObject(savedSpeaker, SpeakerDTO.class);
     }
@@ -115,7 +115,7 @@ public class SpeakerServices {
             throw new IllegalArgumentException("SpeakerVO inválido para atualização.");
         }
 
-        Speaker existingSpeaker = speakerRepository.findById(updatedSpeakerVo.getId())
+        SpeakerModel existingSpeaker = speakerRepository.findById(updatedSpeakerVo.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Speaker não encontrado para o ID: "
                         + updatedSpeakerVo.getId()));
 
@@ -123,7 +123,7 @@ public class SpeakerServices {
         if (updatedSpeakerVo.getUser() != null && updatedSpeakerVo.getUser() != null) {
             try {
                 UserDTO existingUserDTO = userService.findById(updatedSpeakerVo.getUser());
-                User user = DozerMapper.parseObject(existingUserDTO, User.class);
+                UserModel user = DozerMapper.parseObject(existingUserDTO, UserModel.class);
                 existingSpeaker.setUser(user);
             } catch (ResourceNotFoundException e) {
                 logger.log(Level.WARNING, "Usuário não encontrado para o ID: {0}, mantendo usuário atual.",
@@ -146,7 +146,7 @@ public class SpeakerServices {
         }
 
         try {
-            Speaker updatedSpeaker = speakerRepository.save(existingSpeaker);
+            SpeakerModel updatedSpeaker = speakerRepository.save(existingSpeaker);
             return DozerMapper.parseObject(updatedSpeaker, SpeakerDTO.class);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Erro ao salvar Speaker atualizado", e);

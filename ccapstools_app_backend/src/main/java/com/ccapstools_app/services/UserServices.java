@@ -10,7 +10,7 @@ import com.ccapstools_app.data.dto.UserDTO;
 import com.ccapstools_app.data.vo.UserVO;
 import com.ccapstools_app.exceptions.ResourceNotFoundException;
 import com.ccapstools_app.mapper.DozerMapper;
-import com.ccapstools_app.models.User;
+import com.ccapstools_app.models.users.UserModel;
 import com.ccapstools_app.repositories.UserRepository;
 
 @Service
@@ -38,14 +38,14 @@ public class UserServices {
     public UserDTO create(UserVO UserVo) {
         logger.info("create user");
 
-        User User = DozerMapper.parseObject(UserVo, User.class);
+        UserModel User = DozerMapper.parseObject(UserVo, UserModel.class);
         return DozerMapper.parseObject(userRepository.save(User), UserDTO.class);
     }
 
     public UserDTO update(UserVO updatedUserVo) {
         logger.info("update user");
 
-        User existingUser = userRepository.findById(updatedUserVo.getId())
+        UserModel existingUser = userRepository.findById(updatedUserVo.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No records found for this id: " + updatedUserVo.getId() + "\n\n"));
 
@@ -54,7 +54,7 @@ public class UserServices {
         existingUser.setRole(updatedUserVo.getRole());
         existingUser.setRa(updatedUserVo.getRa());
 
-        User updatedUser = userRepository.save(existingUser);
+        UserModel updatedUser = userRepository.save(existingUser);
 
         return DozerMapper.parseObject(updatedUser, UserDTO.class);
     }
@@ -70,7 +70,7 @@ public class UserServices {
 
     public Long getUserIdByUid(String uid) {
         return userRepository.findByUid(uid)
-                .map(User::getId) // Retorna o ID (Long)
+                .map(UserModel::getId) // Retorna o ID (Long)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 

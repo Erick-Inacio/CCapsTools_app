@@ -1,4 +1,4 @@
-package com.ccapstools_app.models;
+package com.ccapstools_app.models.users;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "speakers")
-public class Speaker implements Serializable {
+public class SpeakerModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +42,7 @@ public class Speaker implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User user;
+    private UserModel user;
 
     @ElementCollection
     @CollectionTable(name = "speaker_social_media", joinColumns = @JoinColumn(name = "speaker_id"))
@@ -51,7 +51,7 @@ public class Speaker implements Serializable {
     @Column(name = "url")
     private Map<SocialMediaEnum, String> socialMedia = new HashMap<>();
 
-    public Speaker() {
+    public SpeakerModel() {
     }
 
     public Map<SocialMediaEnum, String> getSocialMedia() {
@@ -90,11 +90,11 @@ public class Speaker implements Serializable {
         this.bio = bio;
     }
 
-    public User getUser() {
+    public UserModel getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserModel user) {
         this.user = user;
     }
 
@@ -131,7 +131,7 @@ public class Speaker implements Serializable {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        Speaker other = (Speaker) obj;
+        SpeakerModel other = (SpeakerModel) obj;
         return Objects.equals(id, other.id) &&
                Objects.equals(company, other.company) &&
                Objects.equals(position, other.position) &&

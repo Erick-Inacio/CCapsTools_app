@@ -1,4 +1,4 @@
-package com.ccapstools_app.models;
+package com.ccapstools_app.models.users;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -21,7 +21,7 @@ import jakarta.persistence.Table;
 @Schema(description = "Representa um usuário no sistema")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "Users")
-public class User implements Serializable {
+public class UserModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,7 +55,7 @@ public class User implements Serializable {
     @Column(name = "ra", unique = true, nullable = true)
     private String ra;
 
-    public User() {
+    public UserModel() {
     }
 
     public Long getId() {
@@ -132,7 +132,7 @@ public class User implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
+        UserModel user = (UserModel) o;
         return Objects.equals(id, user.id) &&
                 Objects.equals(uid, user.uid) &&
                 Objects.equals(name, user.name) &&
