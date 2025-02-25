@@ -18,9 +18,7 @@ import com.ccapstools_app.models.users.UserModel;
 import com.ccapstools_app.repositories.SpeakerRepository;
 import com.google.firebase.database.DatabaseException;
 
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 
 @Service
 public class SpeakerServices {
@@ -32,8 +30,6 @@ public class SpeakerServices {
     @Autowired
     UserServices userService;
 
-    @PersistenceContext
-    private EntityManager entityManager;
 
     public List<SpeakerDTO> findAll() {
         logger.info("find all Speaker");

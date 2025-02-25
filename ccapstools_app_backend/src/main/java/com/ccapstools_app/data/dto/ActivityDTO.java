@@ -1,91 +1,30 @@
-package com.ccapstools_app.models.event;
+package com.ccapstools_app.data.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import com.ccapstools_app.models.users.SpeakerModel;
 import com.ccapstools_app.utils.enums.ActivityTypeEnum;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "activities")
-public class ActivityModel implements Serializable {
+public class ActivityDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Schema(description = "Palestrantes dessa atividade")
-    @ManyToMany
-    @JoinTable(name = "activity_speakers", joinColumns = @JoinColumn(name = "activity_id"), inverseJoinColumns = @JoinColumn(name = "speaker_id"))
-    private List<SpeakerModel> speakers;
-
-    @Schema(description = "Tipo da atividade")
-    @Enumerated(EnumType.STRING)
-    @Column(name = "activity_type")
+    private List<SpeakerDTO> speakers;
     private ActivityTypeEnum activityType;
-
-    @Schema(description = "Nome da atividade")
-    @Column(name = "activity_name")
     private String activityName;
-
-    @Schema(description = "Datas da atividade")
-    @ElementCollection
-    @CollectionTable(name = "activity_dates", joinColumns = @JoinColumn(name = "activity_id"))
-    @Column(name = "date")
     private List<LocalDateTime> dates;
-//
-    @Schema(description = "Duração da atividade")
-    @Column(name = "duration")
     private Integer duration;
-
-    @Schema(description = "Local da atividade")
-    @Column(name = "local")
     private String local;
-
-    @Schema(description = "Alvo da atividade")
-    @Column(name = "aimed_audience")
     private String aimedAudience;
-
-    @Schema(description = "Pré-requisitos da atividade")
-    @Column(name = "prerequisite")
     private String prerequisite;
-
-    @Schema(description = "Hardware e/ou Software necessário para a atividade")
-    @Column(name = "hard_software_required")
     private String hardSoftwareRequired;
-
-    @Schema(description = "Descrição da atividade")
-    @Column(name = "description")
     private String description;
-
-    @Schema(description = "Status de aprovação da atividade")
     private boolean approved;
 
-    @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private EventModel event;
-
-    public ActivityModel() {
+    public ActivityDTO() {
     }
 
     public Long getId() {
@@ -96,11 +35,11 @@ public class ActivityModel implements Serializable {
         this.id = id;
     }
 
-    public List<SpeakerModel> getSpeakers() {
+    public List<SpeakerDTO> getSpeakers() {
         return speakers;
     }
 
-    public void setSpeakers(List<SpeakerModel> speakers) {
+    public void setSpeakers(List<SpeakerDTO> speakers) {
         this.speakers = speakers;
     }
 
@@ -184,14 +123,6 @@ public class ActivityModel implements Serializable {
         this.approved = approved;
     }
 
-    public EventModel getEvent() {
-        return event;
-    }
-
-    public void setEvent(EventModel event) {
-        this.event = event;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -208,7 +139,6 @@ public class ActivityModel implements Serializable {
         result = prime * result + ((hardSoftwareRequired == null) ? 0 : hardSoftwareRequired.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + (approved ? 1231 : 1237);
-        result = prime * result + ((event == null) ? 0 : event.hashCode());
         return result;
     }
 
@@ -220,15 +150,19 @@ public class ActivityModel implements Serializable {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        ActivityModel other = (ActivityModel) obj;
-        return Objects.equals(id, other.id) && Objects.equals(speakers, other.speakers)
-                && Objects.equals(activityType, other.activityType) && Objects.equals(activityName, other.activityName)
-                && Objects.equals(dates, other.dates) && Objects.equals(duration, other.duration)
-                && Objects.equals(local, other.local) && Objects.equals(aimedAudience, other.aimedAudience)
-                && Objects.equals(prerequisite, other.prerequisite)
-                && Objects.equals(hardSoftwareRequired, other.hardSoftwareRequired)
-                && Objects.equals(description, other.description) && approved == other.approved
-                && Objects.equals(event, other.event);
+        ActivityDTO other = (ActivityDTO) obj;
+        return Objects.equals(id, other.id) &&
+                Objects.equals(speakers, other.speakers) &&
+                activityType == other.activityType &&
+                Objects.equals(activityName, other.activityName) &&
+                Objects.equals(dates, other.dates) &&
+                Objects.equals(duration, other.duration) &&
+                Objects.equals(local, other.local) &&
+                Objects.equals(aimedAudience, other.aimedAudience) &&
+                Objects.equals(prerequisite, other.prerequisite) &&
+                Objects.equals(hardSoftwareRequired, other.hardSoftwareRequired) &&
+                Objects.equals(description, other.description) &&
+                approved == other.approved;
     }
 
 }
