@@ -1,18 +1,16 @@
-package com.ccapstools_app.data.dto;
+package com.ccapstools_app.data.vo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import com.ccapstools_app.data.dto.SpeakerDTO;
 import com.ccapstools_app.utils.enums.ActivityTypeEnum;
 
-import io.grpc.InternalChannelz.ChannelTrace.Event;
-
-public class ActivityDTO implements Serializable {
-
+public class ActivityVO implements Serializable{
     private static final long serialVersionUID = 1L;
-
+    
     private Long id;
     private List<SpeakerDTO> speakers;
     private ActivityTypeEnum activityType;
@@ -25,10 +23,9 @@ public class ActivityDTO implements Serializable {
     private String hardSoftwareRequired;
     private String description;
     private boolean approved;
-    
+    private EventVO event;
 
-    public ActivityDTO() {
-    }
+    public ActivityVO() {}
 
     public Long getId() {
         return id;
@@ -126,6 +123,14 @@ public class ActivityDTO implements Serializable {
         this.approved = approved;
     }
 
+    public EventVO getEvent() {
+        return event;
+    }
+
+    public void setEvent(EventVO event) {
+        this.event = event;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -142,6 +147,7 @@ public class ActivityDTO implements Serializable {
         result = prime * result + ((hardSoftwareRequired == null) ? 0 : hardSoftwareRequired.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + (approved ? 1231 : 1237);
+        result = prime * result + ((event == null) ? 0 : event.hashCode());
         return result;
     }
 
@@ -153,19 +159,22 @@ public class ActivityDTO implements Serializable {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        ActivityDTO other = (ActivityDTO) obj;
-        return Objects.equals(id, other.id) &&
-                Objects.equals(speakers, other.speakers) &&
-                activityType == other.activityType &&
-                Objects.equals(activityName, other.activityName) &&
-                Objects.equals(dates, other.dates) &&
-                Objects.equals(duration, other.duration) &&
-                Objects.equals(local, other.local) &&
-                Objects.equals(aimedAudience, other.aimedAudience) &&
-                Objects.equals(prerequisite, other.prerequisite) &&
-                Objects.equals(hardSoftwareRequired, other.hardSoftwareRequired) &&
-                Objects.equals(description, other.description) &&
-                approved == other.approved;
+        ActivityVO other = (ActivityVO) obj;
+        return Objects.equals(id, other.id) 
+                && Objects.equals(speakers, other.speakers) 
+                && activityType == other.activityType 
+                && Objects.equals(activityName, other.activityName) 
+                && Objects.equals(dates, other.dates) 
+                && Objects.equals(duration, other.duration) 
+                && Objects.equals(local, other.local) 
+                && Objects.equals(aimedAudience, other.aimedAudience) 
+                && Objects.equals(prerequisite, other.prerequisite) 
+                && Objects.equals(hardSoftwareRequired, other.hardSoftwareRequired) 
+                && Objects.equals(description, other.description) 
+                && approved == other.approved 
+                && Objects.equals(event, other.event);
     }
+
+    
 
 }

@@ -30,7 +30,6 @@ public class SpeakerServices {
     @Autowired
     UserServices userService;
 
-
     public List<SpeakerDTO> findAll() {
         logger.info("find all Speaker");
 
