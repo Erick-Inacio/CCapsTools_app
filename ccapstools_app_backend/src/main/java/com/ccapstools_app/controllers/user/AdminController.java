@@ -1,4 +1,4 @@
-package com.ccapstools_app.controllers;
+package com.ccapstools_app.controllers.user;
 
 import java.util.Map;
 

@@ -93,6 +93,7 @@ public class SpeakerServices {
         speaker.setPosition(speakerVO.getPosition());
         speaker.setBio(speakerVO.getBio());
         speaker.setSocialMedia(speakerVO.getSocialMedia());
+        //TODO: testar setar diretamente o speaker ao invés de metodo por metodo
 
         // 🔥 Definir manualmente o usuário no speaker
         speaker.setUser(user);
@@ -115,7 +116,7 @@ public class SpeakerServices {
                         + updatedSpeakerVo.getId()));
 
         // Atualiza apenas se houver um novo User associado
-        if (updatedSpeakerVo.getUser() != null && updatedSpeakerVo.getUser() != null) {
+        if (updatedSpeakerVo.getUser() != null) {
             try {
                 UserDTO existingUserDTO = userService.findById(updatedSpeakerVo.getUser());
                 UserModel user = DozerMapper.parseObject(existingUserDTO, UserModel.class);
@@ -124,7 +125,9 @@ public class SpeakerServices {
                 logger.log(Level.WARNING, "Usuário não encontrado para o ID: {0}, mantendo usuário atual.",
                         updatedSpeakerVo.getUser());
             }
+            //FIXME:Garantir que essa verificação tem sentido
         }
+
 
         // Atualiza apenas os campos não nulos
         if (updatedSpeakerVo.getSocialMedia() != null) {

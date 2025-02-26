@@ -2,17 +2,21 @@ package com.ccapstools_app.services;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ccapstools_app.data.dto.ActivityDTO;
+import com.ccapstools_app.data.dto.EventDTO;
 import com.ccapstools_app.data.vo.ActivityVO;
 import com.ccapstools_app.exceptions.ResourceNotFoundException;
-import com.ccapstools_app.models.event.ActivityModel;
-import com.ccapstools_app.repositories.ActivityRepository;
 import com.ccapstools_app.mapper.DozerMapper;
+import com.ccapstools_app.models.event.ActivityModel;
+import com.ccapstools_app.models.event.EventModel;
+import com.ccapstools_app.models.users.SpeakerModel;
+import com.ccapstools_app.repositories.ActivityRepository;
+import com.google.firebase.database.DatabaseException;
 
 public class ActivityServices {
 
@@ -20,6 +24,9 @@ public class ActivityServices {
 
     @Autowired
     ActivityRepository activityRepository;
+
+    @Autowired
+    EventServices eventServices;
 
     public List<ActivityDTO> findAll() {
         logger.info("find all Activity");
@@ -30,7 +37,7 @@ public class ActivityServices {
             return Collections.emptyList();
         }
 
-        try{
+        try {
             return DozerMapper.parseListObjects(activities, ActivityDTO.class);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error parsing activities to DTOs", e);
@@ -41,26 +48,104 @@ public class ActivityServices {
 
     public ActivityDTO findById(Long id) {
         logger.info("find Activity by id");
-        
+
         ActivityModel activity = activityRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this id: " + id));
-        
+
         return DozerMapper.parseObject(activity, ActivityDTO.class);
     }
 
     public ActivityDTO create(ActivityVO activityVo) {
         logger.info("create Activity");
 
-        if(activityVo == null) {
+        if (activityVo == null) {
             logger.warning("Activity is null");
             throw new IllegalArgumentException("Activity is null");
         }
-        
-        if(activityVo.getEvent() == null) {
+
+        if (activityVo.getEvent() == null) {
             throw new IllegalArgumentException("Event is null");
         }
-        
-        
+
+        EventDTO eventDTO = eventServices.findById(activityVo.getEvent().getId());
+        EventModel event = DozerMapper.parseObject(eventDTO, EventModel.class);
+
+        ActivityModel activity = DozerMapper.parseObject(activityVo, ActivityModel.class);
+        activity.setEvent(event);
+
+        ActivityModel savedActivity = activityRepository.save(activity);
+
+        return DozerMapper.parseObject(savedActivity, ActivityDTO.class);
     }
-    
+
+    public ActivityDTO update(ActivityVO updatedActivityVo) {
+        logger.info("update Activity");
+
+        if (updatedActivityVo == null || updatedActivityVo.getId() == null) {
+            throw new IllegalArgumentException("ActivityVO inválido para atualização.");
+        }
+
+        ActivityModel existingActivity = activityRepository.findById(updatedActivityVo.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No records found for this id: " + updatedActivityVo.getId()));
+
+        if (updatedActivityVo.getActivityName() != null) {
+            existingActivity.setActivityName(updatedActivityVo.getActivityName());
+        }
+        if (updatedActivityVo.getActivityType() != null) {
+            existingActivity.setActivityType(updatedActivityVo.getActivityType());
+        }
+        if (updatedActivityVo.getAimedAudience() != null) {
+            existingActivity.setAimedAudience(updatedActivityVo.getAimedAudience());
+        }
+        if (updatedActivityVo.getDates() != null) {
+            existingActivity.setDates(updatedActivityVo.getDates());
+        }
+        if (updatedActivityVo.getDescription() != null) {
+            existingActivity.setDescription(updatedActivityVo.getDescription());
+        }
+        if (updatedActivityVo.getSpeakers() != null) {
+            existingActivity
+                    .setSpeakers(DozerMapper.parseListObjects(updatedActivityVo.getSpeakers(),
+                            SpeakerModel.class));
+        }
+        if (updatedActivityVo.getDuration() != null) {
+            existingActivity.setDuration(updatedActivityVo.getDuration());
+        }
+        if (updatedActivityVo.getLocal() != null) {
+            existingActivity.setLocal(updatedActivityVo.getLocal());
+        }
+        if (updatedActivityVo.getHardSoftwareRequired() != null) {
+            existingActivity.setHardSoftwareRequired(updatedActivityVo.getHardSoftwareRequired());
+        }
+        if (updatedActivityVo.getPrerequisite() != null) {
+            existingActivity.setPrerequisite(updatedActivityVo.getPrerequisite());
+        }
+
+        existingActivity.setApproved(updatedActivityVo.isApproved());
+
+        try {
+            ActivityModel updatedActivityModel = activityRepository.save(existingActivity);
+            return DozerMapper.parseObject(updatedActivityModel, ActivityDTO.class);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Erro ao salvar a Atividade atualizada");
+            throw new DatabaseException("Erro ao atualizar Activity no banco de dados");
+            // FIXME: n faz sentido esse import do firebase aqui
+        }
+    }
+
+    public void delete(Long id) {
+        logger.info("Deletando atividade");
+
+        var entity = activityRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario não encontrado para deletar"));
+
+        try {
+            activityRepository.delete(entity);
+        } catch (Exception e) {
+            throw e;
+        }
+
+    }
+
 }

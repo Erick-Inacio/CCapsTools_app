@@ -175,6 +175,5 @@ public class ActivityVO implements Serializable{
                 && Objects.equals(event, other.event);
     }
 
-    
-
+   
 }

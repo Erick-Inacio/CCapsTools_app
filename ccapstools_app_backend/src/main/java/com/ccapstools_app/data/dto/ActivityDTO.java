@@ -7,13 +7,11 @@ import java.util.Objects;
 
 import com.ccapstools_app.utils.enums.ActivityTypeEnum;
 
-import io.grpc.InternalChannelz.ChannelTrace.Event;
-
 public class ActivityDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Long id; //12
     private List<SpeakerDTO> speakers;
     private ActivityTypeEnum activityType;
     private String activityName;
