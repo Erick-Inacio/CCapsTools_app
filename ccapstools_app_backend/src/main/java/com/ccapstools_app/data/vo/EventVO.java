@@ -2,10 +2,7 @@ package com.ccapstools_app.data.vo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-
-import com.ccapstools_app.data.dto.ActivityDTO;
 
 public class EventVO implements Serializable{
     private static final long serialVersionUID = 1L;
@@ -13,8 +10,8 @@ public class EventVO implements Serializable{
     private Long id;
     private LocalDateTime initialDateTime;
     private LocalDateTime finalDateTime;
-    private List<ActivityDTO> activities;
     private String description;
+    // private List<ActivityDTO> activities;
 
     public EventVO() {}
 
@@ -42,13 +39,13 @@ public class EventVO implements Serializable{
         this.finalDateTime = finalDateTime;
     }
 
-    public List<ActivityDTO> getActivities() {
-        return activities;
-    }
+    // public List<ActivityDTO> getActivities() {
+    //     return activities;
+    // }
 
-    public void setActivities(List<ActivityDTO> activities) {
-        this.activities = activities;
-    }
+    // public void setActivities(List<ActivityDTO> activities) {
+    //     this.activities = activities;
+    // }
 
     public String getDescription() {
         return description;
@@ -65,7 +62,7 @@ public class EventVO implements Serializable{
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((initialDateTime == null) ? 0 : initialDateTime.hashCode());
         result = prime * result + ((finalDateTime == null) ? 0 : finalDateTime.hashCode());
-        result = prime * result + ((activities == null) ? 0 : activities.hashCode());
+        // result = prime * result + ((activities == null) ? 0 : activities.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         return result;
     }
@@ -82,7 +79,7 @@ public class EventVO implements Serializable{
         return Objects.equals(this.id, that.id) &&
                Objects.equals(this.initialDateTime, that.initialDateTime) &&
                Objects.equals(this.finalDateTime, that.finalDateTime) &&
-               Objects.equals(this.activities, that.activities) &&
+            //    Objects.equals(this.activities, that.activities) &&
                Objects.equals(this.description, that.description);
     }
 

@@ -6,15 +6,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.ccapstools_app.data.dto.ActivityDTO;
 import com.ccapstools_app.data.dto.EventDTO;
 import com.ccapstools_app.data.vo.EventVO;
 import com.ccapstools_app.exceptions.ResourceNotFoundException;
 import com.ccapstools_app.mapper.DozerMapper;
-import com.ccapstools_app.models.event.ActivityModel;
 import com.ccapstools_app.models.event.EventModel;
 import com.ccapstools_app.repositories.EventRepository;
 
+@Service
 public class EventServices {
 
     private static final Logger logger = Logger.getLogger(ActivityServices.class.getName());
@@ -22,6 +24,11 @@ public class EventServices {
     @Autowired
     EventRepository eventRepository;
 
+    @Autowired
+    ActivityServices activityServices;
+
+    // Basic CRUD Methods
+    // Select All
     public List<EventDTO> findAll() {
         logger.info("find all Activity");
 
@@ -40,6 +47,7 @@ public class EventServices {
 
     }
 
+    // Select by id
     public EventDTO findById(Long id) {
         logger.info("find Activity by id");
 
@@ -49,6 +57,7 @@ public class EventServices {
         return DozerMapper.parseObject(events, EventDTO.class);
     }
 
+    // Insert
     public EventDTO create(EventVO eventVo) {
         logger.info("create Activity");
 
@@ -62,6 +71,7 @@ public class EventServices {
         return DozerMapper.parseObject(eventRepository.save(event), EventDTO.class);
     }
 
+    // Update
     public EventDTO update(EventVO updatedEventVo) throws Exception {
         logger.info("update Activity");
 
@@ -79,10 +89,11 @@ public class EventServices {
         if (updatedEventVo.getFinalDateTime() != null) {
             existingEvent.setFinalDateTime(updatedEventVo.getFinalDateTime());
         }
-        if (updatedEventVo.getActivities() != null) {
-            existingEvent
-                    .setActivities(DozerMapper.parseListObjects(updatedEventVo.getActivities(), ActivityModel.class));
-        }
+        // if (updatedEventVo.getActivities() != null) {
+        // existingEvent
+        // .setActivities(DozerMapper.parseListObjects(updatedEventVo.getActivities(),
+        // ActivityModel.class));
+        // }
         if (updatedEventVo.getDescription() != null) {
             existingEvent.setDescription(updatedEventVo.getDescription());
         }
@@ -96,6 +107,7 @@ public class EventServices {
         }
     }
 
+    // Delete
     public void delete(Long id) {
         logger.info("Deletando event");
 
@@ -110,4 +122,19 @@ public class EventServices {
 
     }
 
+    // Personalized consults Methods
+    // Select
+    public List<ActivityDTO> getActivitiesByEventId(Long eventId) {
+        if (eventId == null) {
+            throw new IllegalArgumentException("EventId is null");
+        }
+        try {
+            return activityServices.findAlByEventId(eventId);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("EventId is null");
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Erro ao buscar atividades por id do Evento", e);
+            throw e;
+        }
+    }
 }

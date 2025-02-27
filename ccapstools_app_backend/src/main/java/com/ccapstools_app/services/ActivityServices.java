@@ -6,6 +6,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 import com.ccapstools_app.data.dto.ActivityDTO;
 import com.ccapstools_app.data.dto.EventDTO;
@@ -18,6 +20,7 @@ import com.ccapstools_app.models.users.SpeakerModel;
 import com.ccapstools_app.repositories.ActivityRepository;
 import com.google.firebase.database.DatabaseException;
 
+@Service
 public class ActivityServices {
 
     private static final Logger logger = Logger.getLogger(ActivityServices.class.getName());
@@ -26,8 +29,11 @@ public class ActivityServices {
     ActivityRepository activityRepository;
 
     @Autowired
+    @Lazy
     EventServices eventServices;
 
+    // Bascic CRUD Methods
+    // Select All
     public List<ActivityDTO> findAll() {
         logger.info("find all Activity");
 
@@ -46,6 +52,7 @@ public class ActivityServices {
 
     }
 
+    // Select by id
     public ActivityDTO findById(Long id) {
         logger.info("find Activity by id");
 
@@ -55,6 +62,7 @@ public class ActivityServices {
         return DozerMapper.parseObject(activity, ActivityDTO.class);
     }
 
+    // Insert
     public ActivityDTO create(ActivityVO activityVo) {
         logger.info("create Activity");
 
@@ -78,6 +86,7 @@ public class ActivityServices {
         return DozerMapper.parseObject(savedActivity, ActivityDTO.class);
     }
 
+    // Update
     public ActivityDTO update(ActivityVO updatedActivityVo) {
         logger.info("update Activity");
 
@@ -134,6 +143,7 @@ public class ActivityServices {
         }
     }
 
+    // Delete
     public void delete(Long id) {
         logger.info("Deletando atividade");
 
@@ -146,6 +156,18 @@ public class ActivityServices {
             throw e;
         }
 
+    }
+
+    //Personilised consults Methods
+    public List<ActivityDTO> findAlByEventId(Long eventId) {
+        if(eventId == null) {
+            throw new IllegalArgumentException("EventId is null");
+        }
+        try{
+            return DozerMapper.parseListObjects(activityRepository.findAllByEventId(eventId), ActivityDTO.class);
+        } catch (Exception e) {
+            throw new DatabaseException("An error occurred while retrieving the activity", e);
+        }
     }
 
 }
