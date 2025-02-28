@@ -73,9 +73,9 @@ public class EventModel implements Serializable {
         return activities;
     }
 
-    public void setActivities(List<ActivityModel> activities) {
-        this.activities = activities;
-    }
+    // public void setActivities(List<ActivityModel> activities) {
+    //     this.activities = activities;
+    // }
 
     public String getDescription() {
         return description;
@@ -83,6 +83,12 @@ public class EventModel implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    //Métodos
+    public void addActivity(ActivityModel activity) {
+        activity.setEvent(this);
+        this.activities.add(activity);
     }
 
     @Override

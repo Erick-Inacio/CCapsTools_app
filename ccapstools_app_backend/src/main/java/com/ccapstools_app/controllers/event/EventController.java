@@ -98,7 +98,7 @@ public class EventController {
     }
 
     // Delete
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Deleta um evento", description = "Deleta um Evento no sistema")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
