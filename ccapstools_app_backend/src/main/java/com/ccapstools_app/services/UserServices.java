@@ -20,12 +20,15 @@ public class UserServices {
     @Autowired
     UserRepository userRepository;
 
+    // Basic CRUD Methods
+    // Select All
     public List<UserDTO> findAll() {
         logger.info("find all User");
 
         return DozerMapper.parseListObjects(userRepository.findAll(), UserDTO.class);
     }
 
+    // Select by id
     public UserDTO findById(Long id) {
         logger.info("find user by id");
 
@@ -35,6 +38,7 @@ public class UserServices {
         return DozerMapper.parseObject(entity, UserDTO.class);
     }
 
+    // Insert
     public UserDTO create(UserVO UserVo) {
         logger.info("create user");
 

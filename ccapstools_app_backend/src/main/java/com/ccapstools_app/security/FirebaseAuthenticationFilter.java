@@ -41,7 +41,7 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
             String role = decodedToken.getClaims().get("role") != null ? decodedToken.getClaims().get("role").toString()
                     : "STUDENT"; // Captura a role
 
-            System.out.println("✅ [FirebaseAuthFilter] Usuário autenticado: " + userId + " | role: " + role);
+            System.out.println("✅ [FirebaseAuthFilter] Usuário autenticado:     " + userId + " | role: " + role);
 
             // 🔥 Adiciona a role ao Spring Security
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null,

@@ -30,25 +30,32 @@ public class UserController {
     @Autowired
     private UserServices userServices;
 
+    //Basic Http methods
+    // Get
     @Operation(summary = "Lista todos os usuários", description = "Retorna uma lista de Usuários cadastrados no sistema")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserDTO> findAll() {
         return userServices.findAll();
     }
 
+
+    // Get by id
     @Operation(summary = "Busca um usuário pelo id", description = "Retorna um Usuário cadastrado no sistema")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO findById(@PathVariable Long id) {
         return userServices.findById(id);
     }
 
+    // Get by uid
     @Operation(summary = "Busca um usuário pelo uid", description = "Retorna um Usuário cadastrado no sistema")
     @GetMapping(value = "/firebase/{uid}")
     public UserDTO getUserByuid(@PathVariable String uid) {
         Long userId = userServices.getUserIdByUid(uid);
         return userServices.findById(userId);
     }
+ 
 
+    // Post
     @Operation(summary = "Cria um novo usuário", description = "Cria um novo Usuário no sistema")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> create(@RequestBody UserVO UserVO) {

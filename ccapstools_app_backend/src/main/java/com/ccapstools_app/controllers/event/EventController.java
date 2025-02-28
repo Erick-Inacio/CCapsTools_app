@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,13 +35,13 @@ public class EventController {
     // Gets
     @Operation(summary = "Lista todos os eventos", description = "Retorna uma lista de Eventos cadastrados no sistema")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDTO> getAll() {
+    public ResponseEntity<List<EventDTO>> getAll() {
         try {
             List<EventDTO> events = eventServices.findAll();
             if (events == null || events.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
-            return ResponseEntity.ok(events.get(0));
+            return ResponseEntity.ok(events);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -99,7 +100,7 @@ public class EventController {
     // Delete
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Deleta um evento", description = "Deleta um Evento no sistema")
-    @PutMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
         try {
             eventServices.delete(id);
@@ -111,9 +112,9 @@ public class EventController {
 
     // Endpoinst Personalizados
     // get
-    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT', 'SPEAKER', 'COMMISSION')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STUDENT', 'ROLE_SPEAKER', 'ROLE_COMMISSION')")
     @GetMapping(value = "/getActivitisByEventId/{eventId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ActivityDTO>> getMethodName(@PathVariable Long eventId) {
+    public ResponseEntity<List<ActivityDTO>> getActivitiesByEventId(@PathVariable Long eventId) {
         if (eventId == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -122,6 +123,8 @@ public class EventController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
+
+        //TODO: verificar se as permissões estão sendo validadas
     }
 
 }
