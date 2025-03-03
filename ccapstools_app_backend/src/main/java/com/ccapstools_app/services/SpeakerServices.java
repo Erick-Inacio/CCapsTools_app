@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ccapstools_app.data.dto.SpeakerDTO;
 import com.ccapstools_app.data.dto.UserDTO;
@@ -72,6 +74,7 @@ public class SpeakerServices {
         }
     }
 
+    @Transactional
     public SpeakerDTO create(SpeakerVO speakerVO) {
         logger.info("Criando Speaker...");
 
@@ -83,25 +86,29 @@ public class SpeakerServices {
             throw new IllegalArgumentException("ID do usuário no SpeakerVO não pode ser nulo");
         }
 
-        // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
-        UserDTO userDTO = userService.findById(speakerVO.getUser());
-        UserModel user = DozerMapper.parseObject(userDTO, UserModel.class);
-
-        // 🔥 Criar Speaker manualmente (sem DozerMapper no user)
-        SpeakerModel speaker = new SpeakerModel();
-        speaker.setCompany(speakerVO.getCompany());
-        speaker.setPosition(speakerVO.getPosition());
-        speaker.setBio(speakerVO.getBio());
-        speaker.setSocialMedia(speakerVO.getSocialMedia());
-        //TODO: testar setar diretamente o speaker ao invés de metodo por metodo
-
-        // 🔥 Definir manualmente o usuário no speaker
-        speaker.setUser(user);
-
-        // 🔥 Salvar no banco de dados
-        SpeakerModel savedSpeaker = speakerRepository.save(speaker);
-
-        return DozerMapper.parseObject(savedSpeaker, SpeakerDTO.class);
+        try {
+            // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
+            UserDTO userDTO = userService.findById(speakerVO.getUser());
+            UserModel user = DozerMapper.parseObject(userDTO, UserModel.class);
+    
+            // 🔥 Criar Speaker manualmente (sem DozerMapper no user)
+            SpeakerModel speaker = new SpeakerModel();
+            speaker.setCompany(speakerVO.getCompany());
+            speaker.setPosition(speakerVO.getPosition());
+            speaker.setBio(speakerVO.getBio());
+            speaker.setSocialMedia(speakerVO.getSocialMedia());
+    
+            // 🔥 Definir manualmente o usuário no speaker
+            speaker.setUser(user);
+    
+            // 🔥 Salvar no banco de dados
+            SpeakerModel savedSpeaker = speakerRepository.save(speaker);
+    
+            return DozerMapper.parseObject(savedSpeaker, SpeakerDTO.class);
+        } catch (HibernateException e) {
+            logger.log(Level.SEVERE, "Error creating Speaker", e);
+            throw e;
+        }
     }
 
     public SpeakerDTO update(SpeakerVO updatedSpeakerVo) {
@@ -125,9 +132,8 @@ public class SpeakerServices {
                 logger.log(Level.WARNING, "Usuário não encontrado para o ID: {0}, mantendo usuário atual.",
                         updatedSpeakerVo.getUser());
             }
-            //FIXME:Garantir que essa verificação tem sentido
+            // FIXME:Garantir que essa verificação tem sentido
         }
-
 
         // Atualiza apenas os campos não nulos
         if (updatedSpeakerVo.getSocialMedia() != null) {

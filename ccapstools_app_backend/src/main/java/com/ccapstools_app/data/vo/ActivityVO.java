@@ -5,16 +5,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import com.ccapstools_app.data.dto.SpeakerDTO;
 import com.ccapstools_app.utils.enums.ActivityTypeEnum;
 
-public class ActivityVO implements Serializable{
+public class ActivityVO implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     private Long id;
-    private List<SpeakerDTO> speakers;
-    private ActivityTypeEnum activityType;
     private String activityName;
+    private List<Long> speakers;
+    private ActivityTypeEnum activityType;
     private List<LocalDateTime> dates;
     private Integer duration;
     private String local;
@@ -25,7 +24,8 @@ public class ActivityVO implements Serializable{
     private boolean approved;
     private EventVO event;
 
-    public ActivityVO() {}
+    public ActivityVO() {
+    }
 
     public Long getId() {
         return id;
@@ -35,11 +35,11 @@ public class ActivityVO implements Serializable{
         this.id = id;
     }
 
-    public List<SpeakerDTO> getSpeakers() {
+    public List<Long> getSpeakers() {
         return speakers;
     }
 
-    public void setSpeakers(List<SpeakerDTO> speakers) {
+    public void setSpeakers(List<Long> speakers) {
         this.speakers = speakers;
     }
 
@@ -136,9 +136,9 @@ public class ActivityVO implements Serializable{
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((activityName == null) ? 0 : activityName.hashCode());
         result = prime * result + ((speakers == null) ? 0 : speakers.hashCode());
         result = prime * result + ((activityType == null) ? 0 : activityType.hashCode());
-        result = prime * result + ((activityName == null) ? 0 : activityName.hashCode());
         result = prime * result + ((dates == null) ? 0 : dates.hashCode());
         result = prime * result + ((duration == null) ? 0 : duration.hashCode());
         result = prime * result + ((local == null) ? 0 : local.hashCode());
@@ -151,29 +151,30 @@ public class ActivityVO implements Serializable{
         return result;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        ActivityVO other = (ActivityVO) obj;
-        return Objects.equals(id, other.id) 
-                && Objects.equals(speakers, other.speakers) 
-                && activityType == other.activityType 
-                && Objects.equals(activityName, other.activityName) 
-                && Objects.equals(dates, other.dates) 
-                && Objects.equals(duration, other.duration) 
-                && Objects.equals(local, other.local) 
-                && Objects.equals(aimedAudience, other.aimedAudience) 
-                && Objects.equals(prerequisite, other.prerequisite) 
-                && Objects.equals(hardSoftwareRequired, other.hardSoftwareRequired) 
-                && Objects.equals(description, other.description) 
-                && approved == other.approved 
-                && Objects.equals(event, other.event);
-    }
 
-   
+    @Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+        return false;
+    }
+    ActivityVO other = (ActivityVO) obj;
+    return Objects.equals(id, other.id) &&
+           Objects.equals(activityName, other.activityName) &&
+           Objects.equals(speakers, other.speakers) &&
+           activityType == other.activityType &&
+           Objects.equals(dates, other.dates) &&
+           Objects.equals(duration, other.duration) &&
+           Objects.equals(local, other.local) &&
+           Objects.equals(aimedAudience, other.aimedAudience) &&
+           Objects.equals(prerequisite, other.prerequisite) &&
+           Objects.equals(hardSoftwareRequired, other.hardSoftwareRequired) &&
+           Objects.equals(description, other.description) &&
+           approved == other.approved &&
+           Objects.equals(event, other.event);
+}
+
+    
 }

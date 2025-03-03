@@ -1,5 +1,6 @@
 package com.ccapstools_app.services;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -10,14 +11,16 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.ccapstools_app.data.dto.ActivityDTO;
-import com.ccapstools_app.data.dto.EventDTO;
 import com.ccapstools_app.data.vo.ActivityVO;
+import com.ccapstools_app.data.vo.SpeakerVO;
 import com.ccapstools_app.exceptions.ResourceNotFoundException;
 import com.ccapstools_app.mapper.DozerMapper;
 import com.ccapstools_app.models.event.ActivityModel;
 import com.ccapstools_app.models.event.EventModel;
 import com.ccapstools_app.models.users.SpeakerModel;
 import com.ccapstools_app.repositories.ActivityRepository;
+import com.ccapstools_app.repositories.EventRepository;
+import com.ccapstools_app.repositories.SpeakerRepository;
 import com.google.firebase.database.DatabaseException;
 
 @Service
@@ -30,7 +33,11 @@ public class ActivityServices {
 
     @Autowired
     @Lazy
-    EventServices eventServices;
+    EventRepository eventRepository;
+
+    @Autowired
+    @Lazy
+    SpeakerRepository speakerRepository;
 
     // Bascic CRUD Methods
     // Select All
@@ -75,15 +82,33 @@ public class ActivityServices {
             throw new IllegalArgumentException("Event is null");
         }
 
-        EventDTO eventDTO = eventServices.findById(activityVo.getEvent().getId());
-        EventModel event = DozerMapper.parseObject(eventDTO, EventModel.class);
+        try {
+            EventModel event = eventRepository.findById(activityVo.getEvent().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "No records found for this id: " + activityVo.getEvent()));
 
-        ActivityModel activity = DozerMapper.parseObject(activityVo, ActivityModel.class);
-        activity.setEvent(event);
+            List<SpeakerModel> speakers = new ArrayList<>();
 
-        ActivityModel savedActivity = activityRepository.save(activity);
+            if (activityVo.getSpeakers() != null) {
+                for (Long speakerId : activityVo.getSpeakers()) {
+                    SpeakerModel speaker = speakerRepository.findById(speakerId)
+                            .orElseThrow(() -> new ResourceNotFoundException(
+                                    "No records found for this id: " + speakerId));
+                    speakers.add(speaker);
+                }
+            }
 
-        return DozerMapper.parseObject(savedActivity, ActivityDTO.class);
+            ActivityModel activity = DozerMapper.parseObject(activityVo, ActivityModel.class);
+            event.addActivity(activity);
+            activity.setSpeakers(speakers);
+
+            ActivityModel savedActivity = activityRepository.save(activity);
+
+            return DozerMapper.parseObject(savedActivity, ActivityDTO.class);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error creating activity", e);
+            throw e;
+        }
     }
 
     // Update
@@ -113,11 +138,11 @@ public class ActivityServices {
         if (updatedActivityVo.getDescription() != null) {
             existingActivity.setDescription(updatedActivityVo.getDescription());
         }
-        if (updatedActivityVo.getSpeakers() != null) {
-            existingActivity
-                    .setSpeakers(DozerMapper.parseListObjects(updatedActivityVo.getSpeakers(),
-                            SpeakerModel.class));
-        }
+        // if (updatedActivityVo.getSpeakers() != null) {
+        // existingActivity
+        // .setSpeakers(DozerMapper.parseListObjects(updatedActivityVo.getSpeakers(),
+        // SpeakerModel.class));
+        // }
         if (updatedActivityVo.getDuration() != null) {
             existingActivity.setDuration(updatedActivityVo.getDuration());
         }
@@ -158,12 +183,12 @@ public class ActivityServices {
 
     }
 
-    //Personilised consults Methods
-    public List<ActivityDTO> findAlByEventId(Long eventId) {
-        if(eventId == null) {
+    // Personilised consults Methods
+    public List<ActivityDTO> findAllByEventId(Long eventId) {
+        if (eventId == null) {
             throw new IllegalArgumentException("EventId is null");
         }
-        try{
+        try {
             return DozerMapper.parseListObjects(activityRepository.findAllByEventId(eventId), ActivityDTO.class);
         } catch (Exception e) {
             throw new DatabaseException("An error occurred while retrieving the activity", e);

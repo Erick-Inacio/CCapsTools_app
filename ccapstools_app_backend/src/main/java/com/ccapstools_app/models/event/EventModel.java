@@ -3,6 +3,7 @@ package com.ccapstools_app.models.event;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ public class EventModel implements Serializable {
 
     @Schema(description = "Atividades do evento")
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ActivityModel> activities;
+    private List<ActivityModel> activities  = new ArrayList<>();
 
     @Schema(description = "Descrição do evento")
     @Column(name = "description")
@@ -73,9 +74,9 @@ public class EventModel implements Serializable {
         return activities;
     }
 
-    // public void setActivities(List<ActivityModel> activities) {
-    //     this.activities = activities;
-    // }
+    public void setActivities(List<ActivityModel> activities) {
+        this.activities = activities;
+    }
 
     public String getDescription() {
         return description;

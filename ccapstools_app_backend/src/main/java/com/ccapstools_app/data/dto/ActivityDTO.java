@@ -11,7 +11,7 @@ public class ActivityDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id; //12
+    private Long id;
     private List<SpeakerDTO> speakers;
     private ActivityTypeEnum activityType;
     private String activityName;

@@ -17,3 +17,11 @@ COPY .env /app/.env
 RUN ./mvnw clean package
 
 CMD ["sh", "-c", "java -jar $(ls target/*.jar | head -n 1)"]
+
+# Quando mudar o codigo fonte da api (se alterar dependencia)
+#docker-compose up -d --build app
+
+# quando mexer no pom.xml
+# docker-compose down app  # Para evitar erros de cache
+# docker-compose up -d --build app
+

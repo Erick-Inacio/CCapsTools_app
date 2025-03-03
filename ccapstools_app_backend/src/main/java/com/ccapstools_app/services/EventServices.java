@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.ccapstools_app.data.dto.ActivityDTO;
@@ -25,6 +26,7 @@ public class EventServices {
     EventRepository eventRepository;
 
     @Autowired
+    @Lazy
     ActivityServices activityServices;
 
     // Basic CRUD Methods
@@ -129,7 +131,7 @@ public class EventServices {
             throw new IllegalArgumentException("EventId is null");
         }
         try {
-            return activityServices.findAlByEventId(eventId);
+            return activityServices.findAllByEventId(eventId);
         } catch (NullPointerException e) {
             throw new NullPointerException("EventId is null");
         } catch (Exception e) {

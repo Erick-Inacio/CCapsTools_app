@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import com.ccapstools_app.services.EventServices;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
+@EnableMethodSecurity
 @RequestMapping("/api/event")
 public class EventController {
 
@@ -31,7 +33,6 @@ public class EventController {
     private EventServices eventServices;
 
     // Endpoints verbos HTTPs
-
     // Gets
     @Operation(summary = "Lista todos os eventos", description = "Retorna uma lista de Eventos cadastrados no sistema")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -65,7 +66,7 @@ public class EventController {
     }
 
     // Post
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Operation(summary = "Cria um novo evento", description = "Cria um novo Evento no sistema")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EventDTO> create(@RequestBody EventVO eventVO) {
@@ -101,7 +102,7 @@ public class EventController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Deleta um evento", description = "Deleta um Evento no sistema")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             eventServices.delete(id);
             return ResponseEntity.noContent().build();
