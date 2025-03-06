@@ -36,9 +36,9 @@ public class ActivityController {
     // Get all
     @Operation(summary = "Lista todas as atividades", description = "Retorna uma lista de atividades cadastradas no sistema")
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ActivityDTO>> findAll() {
+    public ResponseEntity<List<ActivityDTO>> getAll() {
         try {
-            List<ActivityDTO> activities = activityServices.findAll();
+            List<ActivityDTO> activities = activityServices.getAll();
             if (activities == null || activities.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
@@ -51,9 +51,9 @@ public class ActivityController {
     // Get by id
     @Operation(summary = "Busca uma atividade pelo id", description = "Retorna uma atividade cadastrada no sistema")
     @GetMapping(value = "/getById", params = { "id" }, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ActivityDTO> findById(@RequestParam Long id) {
+    public ResponseEntity<ActivityDTO> getById(@RequestParam Long id) {
         try {
-            ActivityDTO activity = activityServices.findById(id);
+            ActivityDTO activity = activityServices.getById(id);
             if (activity == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -67,13 +67,13 @@ public class ActivityController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SPEAKER')")
     @Operation(summary = "Cria uma nova atividade", description = "Cria uma nova atividade no sistema")
     @PostMapping(value = "/post",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ActivityDTO> create(@RequestBody ActivityVO activityVO) {
+    public ResponseEntity<ActivityDTO> post(@RequestBody ActivityVO activityVO) {
 
         if (activityVO == null) {
             return ResponseEntity.badRequest().build();
         }
         try {
-            return ResponseEntity.ok(activityServices.create(activityVO));
+            return ResponseEntity.ok(activityServices.post(activityVO));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -84,12 +84,12 @@ public class ActivityController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Operation(summary = "Altera uma atividade", description = "Altera uma atividade cadastrada no sistema")
     @PutMapping(value = "/put",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ActivityDTO> update(@RequestBody ActivityVO activityVO) {
+    public ResponseEntity<ActivityDTO> put(@RequestBody ActivityVO activityVO) {
         if (activityVO == null) {
             return ResponseEntity.badRequest().build();
         }
         try {
-            return ResponseEntity.ok(activityServices.update(activityVO));
+            return ResponseEntity.ok(activityServices.put(activityVO));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

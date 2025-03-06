@@ -34,12 +34,14 @@ public class EventController {
     private EventServices eventServices;
 
     // Endpoints verbos HTTPs
+
     // Gets
+    // Get all
     @Operation(summary = "Lista todos os eventos", description = "Retorna uma lista de Eventos cadastrados no sistema")
     @GetMapping(value = "/getAll",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EventDTO>> getAll() {
         try {
-            List<EventDTO> events = eventServices.findAll();
+            List<EventDTO> events = eventServices.getAll();
             if (events == null || events.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
@@ -49,6 +51,7 @@ public class EventController {
         }
     }
 
+    // Get by id
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT', 'SPEAKER', 'COMMISSION')")
     @Operation(summary = "Busca um evento pelo id", description = "Retorna um Evento cadastrado no sistema")
     @GetMapping(value = "/getById", params = { "id" }, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +60,7 @@ public class EventController {
             return ResponseEntity.badRequest().build();
         }
         try {
-            EventDTO event = eventServices.findById(id);
+            EventDTO event = eventServices.getById(id);
             return ResponseEntity.ok(event);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -70,12 +73,12 @@ public class EventController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Operation(summary = "Cria um novo evento", description = "Cria um novo Evento no sistema")
     @PostMapping(value = "/post",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDTO> create(@RequestBody EventVO eventVO) {
+    public ResponseEntity<EventDTO> post(@RequestBody EventVO eventVO) {
         if (eventVO == null) {
             return ResponseEntity.badRequest().build();
         }
         try {
-            return ResponseEntity.ok(eventServices.create(eventVO));
+            return ResponseEntity.ok(eventServices.post(eventVO));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -86,14 +89,14 @@ public class EventController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Altera um evento", description = "Altera um Evento no sistema")
     @PutMapping(value = "/put",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDTO> update(@RequestBody EventVO eventVO) {
+    public ResponseEntity<EventDTO> put(@RequestBody EventVO eventVO) {
 
         if (eventVO == null) {
             return ResponseEntity.badRequest().build();
         }
 
         try {
-            return ResponseEntity.ok(eventServices.update(eventVO));
+            return ResponseEntity.ok(eventServices.put(eventVO));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -121,7 +124,7 @@ public class EventController {
             return ResponseEntity.badRequest().build();
         }
         try {
-            return ResponseEntity.ok(eventServices.getActivitiesByEventId(eventId));
+            return ResponseEntity.ok(eventServices.getByEvent(eventId));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

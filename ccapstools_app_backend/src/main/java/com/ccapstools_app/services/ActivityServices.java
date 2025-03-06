@@ -38,9 +38,9 @@ public class ActivityServices {
     @Lazy
     SpeakerRepository speakerRepository;
 
-    // Bascic CRUD Methods
-    // Select All
-    public List<ActivityDTO> findAll() {
+    /* Bascic CRUD Methods as http verbs */
+    // get All
+    public List<ActivityDTO> getAll() {
         logger.info("find all Activity");
 
         List<ActivityModel> activities = activityRepository.findAll();
@@ -58,8 +58,8 @@ public class ActivityServices {
 
     }
 
-    // Select by id
-    public ActivityDTO findById(Long id) {
+    // get by id
+    public ActivityDTO getById(Long id) {
         logger.info("find Activity by id");
 
         ActivityModel activity = activityRepository.findById(id)
@@ -68,8 +68,8 @@ public class ActivityServices {
         return DozerMapper.parseObject(activity, ActivityDTO.class);
     }
 
-    // Insert
-    public ActivityDTO create(ActivityVO activityVo) {
+    // post
+    public ActivityDTO post(ActivityVO activityVo) {
         logger.info("create Activity");
 
         if (activityVo == null) {
@@ -110,8 +110,8 @@ public class ActivityServices {
         }
     }
 
-    // Update
-    public ActivityDTO update(ActivityVO updatedActivityVo) {
+    // put
+    public ActivityDTO put(ActivityVO updatedActivityVo) {
         logger.info("update Activity");
 
         if (updatedActivityVo == null || updatedActivityVo.getId() == null) {
@@ -183,12 +183,13 @@ public class ActivityServices {
     }
 
     // Personilised consults Methods
-    public List<ActivityDTO> findAllByEventId(Long eventId) {
+    //get by event
+    public List<ActivityDTO> getAllByEvent(Long eventId) {
         if (eventId == null) {
             throw new IllegalArgumentException("EventId is null");
         }
         try {
-            return DozerMapper.parseListObjects(activityRepository.findAllByEventId(eventId), ActivityDTO.class);
+            return DozerMapper.parseListObjects(activityRepository.getAllByEvent(eventId), ActivityDTO.class);
         } catch (Exception e) {
             throw new DatabaseException("An error occurred while retrieving the activity", e);
         }

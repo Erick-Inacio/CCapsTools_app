@@ -10,5 +10,5 @@ import com.ccapstools_app.models.users.UserModel;
 @Repository
 public interface UserRepository extends JpaRepository<UserModel, Long> {
 
-    Optional<UserModel> findByUid(String uid);
+    Optional<UserModel> getIdByUid(String uid);
 }

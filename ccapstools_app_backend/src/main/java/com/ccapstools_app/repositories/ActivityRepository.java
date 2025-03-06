@@ -13,5 +13,5 @@ import com.ccapstools_app.models.event.ActivityModel;
 public interface ActivityRepository extends JpaRepository<ActivityModel, Long> {
 
     @Query(value="SELECT * FROM activities WHERE event_id = :eventId", nativeQuery = true)
-    List<ActivityModel> findAllByEventId(@Param("eventId") Long eventId);
+    List<ActivityModel> getAllByEvent(@Param("eventId") Long eventId);
 }

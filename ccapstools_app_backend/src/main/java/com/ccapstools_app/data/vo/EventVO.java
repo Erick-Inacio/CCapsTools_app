@@ -11,7 +11,6 @@ public class EventVO implements Serializable{
     private LocalDateTime initialDateTime;
     private LocalDateTime finalDateTime;
     private String description;
-    // private List<ActivityDTO> activities;
 
     public EventVO() {}
 
@@ -38,14 +37,6 @@ public class EventVO implements Serializable{
     public void setFinalDateTime(LocalDateTime finalDateTime) {
         this.finalDateTime = finalDateTime;
     }
-
-    // public List<ActivityDTO> getActivities() {
-    //     return activities;
-    // }
-
-    // public void setActivities(List<ActivityDTO> activities) {
-    //     this.activities = activities;
-    // }
 
     public String getDescription() {
         return description;

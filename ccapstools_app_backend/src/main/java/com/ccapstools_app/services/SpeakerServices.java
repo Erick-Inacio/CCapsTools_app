@@ -32,7 +32,10 @@ public class SpeakerServices {
     @Autowired
     UserServices userService;
 
-    public List<SpeakerDTO> findAll() {
+    /* Basic CRUD Methods as http verbs */
+    // gets
+    // get all
+    public List<SpeakerDTO> getAll() {
         logger.info("find all Speaker");
 
         List<SpeakerModel> speakers = speakerRepository.findAll();
@@ -49,7 +52,8 @@ public class SpeakerServices {
         }
     }
 
-    public SpeakerDTO findById(Long id) {
+    // get by id
+    public SpeakerDTO getById(Long id) {
         logger.info("find Speaker by id");
 
         SpeakerModel speaker = speakerRepository.findById(id)
@@ -58,24 +62,9 @@ public class SpeakerServices {
         return DozerMapper.parseObject(speaker, SpeakerDTO.class);
     }
 
-    public SpeakerDTO findSpeakerByUserId(Long userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
-        }
-
-        try {
-            SpeakerModel speaker = speakerRepository.findSpeakerByUserId(userId);
-
-            return DozerMapper.parseObject(speaker, SpeakerDTO.class);
-        } catch (NoResultException e) {
-            throw new ResourceNotFoundException("Speaker not found for user ID: " + userId);
-        } catch (Exception e) {
-            throw new DatabaseException("An error occurred while retrieving the speaker", e);
-        }
-    }
-
+    // post
     @Transactional
-    public SpeakerDTO create(SpeakerVO speakerVO) {
+    public SpeakerDTO post(SpeakerVO speakerVO) {
         logger.info("Criando Speaker...");
 
         if (speakerVO == null) {
@@ -88,22 +77,22 @@ public class SpeakerServices {
 
         try {
             // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
-            UserDTO userDTO = userService.findById(speakerVO.getUser());
+            UserDTO userDTO = userService.getById(speakerVO.getUser());
             UserModel user = DozerMapper.parseObject(userDTO, UserModel.class);
-    
+
             // 🔥 Criar Speaker manualmente (sem DozerMapper no user)
             SpeakerModel speaker = new SpeakerModel();
             speaker.setCompany(speakerVO.getCompany());
             speaker.setPosition(speakerVO.getPosition());
             speaker.setBio(speakerVO.getBio());
             speaker.setSocialMedia(speakerVO.getSocialMedia());
-    
+
             // 🔥 Definir manualmente o usuário no speaker
             speaker.setUser(user);
-    
+
             // 🔥 Salvar no banco de dados
             SpeakerModel savedSpeaker = speakerRepository.save(speaker);
-    
+
             return DozerMapper.parseObject(savedSpeaker, SpeakerDTO.class);
         } catch (HibernateException e) {
             logger.log(Level.SEVERE, "Error creating Speaker", e);
@@ -111,7 +100,8 @@ public class SpeakerServices {
         }
     }
 
-    public SpeakerDTO update(SpeakerVO updatedSpeakerVo) {
+    // put
+    public SpeakerDTO put(SpeakerVO updatedSpeakerVo) {
         logger.info("Atualizando Speaker...");
 
         if (updatedSpeakerVo == null || updatedSpeakerVo.getId() == null) {
@@ -125,7 +115,7 @@ public class SpeakerServices {
         // Atualiza apenas se houver um novo User associado
         if (updatedSpeakerVo.getUser() != null) {
             try {
-                UserDTO existingUserDTO = userService.findById(updatedSpeakerVo.getUser());
+                UserDTO existingUserDTO = userService.getById(updatedSpeakerVo.getUser());
                 UserModel user = DozerMapper.parseObject(existingUserDTO, UserModel.class);
                 existingSpeaker.setUser(user);
             } catch (ResourceNotFoundException e) {
@@ -155,6 +145,34 @@ public class SpeakerServices {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Erro ao salvar Speaker atualizado", e);
             throw new DatabaseException("Erro ao atualizar Speaker no banco de dados.");
+        }
+    }
+
+    // delete
+    public void delete(Long id) {
+        logger.info("Deleting Speaker...");
+
+        SpeakerModel speaker = speakerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Speaker not found for ID: " + id));
+
+        speakerRepository.delete(speaker);
+    }
+
+    /* Personalized consults */
+    // get
+    public SpeakerDTO findSpeakerByUserId(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
+        try {
+            SpeakerModel speaker = speakerRepository.findSpeakerByUserId(userId);
+
+            return DozerMapper.parseObject(speaker, SpeakerDTO.class);
+        } catch (NoResultException e) {
+            throw new ResourceNotFoundException("Speaker not found for user ID: " + userId);
+        } catch (Exception e) {
+            throw new DatabaseException("An error occurred while retrieving the speaker", e);
         }
     }
 

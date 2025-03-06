@@ -29,9 +29,9 @@ public class EventServices {
     @Lazy
     ActivityServices activityServices;
 
-    // Basic CRUD Methods
-    // Select All
-    public List<EventDTO> findAll() {
+    /* Basic CRUD Methods as http verbs */
+    // get All
+    public List<EventDTO> getAll() {
         logger.info("find all Activity");
 
         List<EventModel> events = eventRepository.findAll();
@@ -49,8 +49,8 @@ public class EventServices {
 
     }
 
-    // Select by id
-    public EventDTO findById(Long id) {
+    // get by id
+    public EventDTO getById(Long id) {
         logger.info("find Activity by id");
 
         EventModel events = eventRepository.findById(id)
@@ -59,8 +59,8 @@ public class EventServices {
         return DozerMapper.parseObject(events, EventDTO.class);
     }
 
-    // Insert
-    public EventDTO create(EventVO eventVo) {
+    // post
+    public EventDTO post(EventVO eventVo) {
         logger.info("create Activity");
 
         if (eventVo == null) {
@@ -73,8 +73,8 @@ public class EventServices {
         return DozerMapper.parseObject(eventRepository.save(event), EventDTO.class);
     }
 
-    // Update
-    public EventDTO update(EventVO updatedEventVo) throws Exception {
+    // put
+    public EventDTO put(EventVO updatedEventVo) throws Exception {
         logger.info("update Activity");
 
         if (updatedEventVo == null || updatedEventVo.getId() == null) {
@@ -91,11 +91,6 @@ public class EventServices {
         if (updatedEventVo.getFinalDateTime() != null) {
             existingEvent.setFinalDateTime(updatedEventVo.getFinalDateTime());
         }
-        // if (updatedEventVo.getActivities() != null) {
-        // existingEvent
-        // .setActivities(DozerMapper.parseListObjects(updatedEventVo.getActivities(),
-        // ActivityModel.class));
-        // }
         if (updatedEventVo.getDescription() != null) {
             existingEvent.setDescription(updatedEventVo.getDescription());
         }
@@ -125,13 +120,13 @@ public class EventServices {
     }
 
     // Personalized consults Methods
-    // Select
-    public List<ActivityDTO> getActivitiesByEventId(Long eventId) {
+    // get by event
+    public List<ActivityDTO> getByEvent(Long eventId) {
         if (eventId == null) {
             throw new IllegalArgumentException("EventId is null");
         }
         try {
-            return activityServices.findAllByEventId(eventId);
+            return activityServices.getAllByEvent(eventId);
         } catch (NullPointerException e) {
             throw new NullPointerException("EventId is null");
         } catch (Exception e) {
