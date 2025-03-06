@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ccapstools_app.data.dto.ActivityDTO;
@@ -35,7 +36,7 @@ public class EventController {
     // Endpoints verbos HTTPs
     // Gets
     @Operation(summary = "Lista todos os eventos", description = "Retorna uma lista de Eventos cadastrados no sistema")
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/getAll",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EventDTO>> getAll() {
         try {
             List<EventDTO> events = eventServices.findAll();
@@ -50,8 +51,8 @@ public class EventController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT', 'SPEAKER', 'COMMISSION')")
     @Operation(summary = "Busca um evento pelo id", description = "Retorna um Evento cadastrado no sistema")
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDTO> getById(@PathVariable Long id) {
+    @GetMapping(value = "/getById", params = { "id" }, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EventDTO> getById(@RequestParam Long id) {
         if (id == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -68,7 +69,7 @@ public class EventController {
     // Post
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Operation(summary = "Cria um novo evento", description = "Cria um novo Evento no sistema")
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/post",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EventDTO> create(@RequestBody EventVO eventVO) {
         if (eventVO == null) {
             return ResponseEntity.badRequest().build();
@@ -84,7 +85,7 @@ public class EventController {
     // Put
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Altera um evento", description = "Altera um Evento no sistema")
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/put",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EventDTO> update(@RequestBody EventVO eventVO) {
 
         if (eventVO == null) {
@@ -101,8 +102,8 @@ public class EventController {
     // Delete
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Deleta um evento", description = "Deleta um Evento no sistema")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    @DeleteMapping(value = "/delete", params = { "id" })
+    public ResponseEntity<?> delete(@RequestParam Long id) {
         try {
             eventServices.delete(id);
             return ResponseEntity.noContent().build();

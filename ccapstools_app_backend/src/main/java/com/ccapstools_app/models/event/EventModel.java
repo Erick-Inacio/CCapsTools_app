@@ -39,6 +39,7 @@ public class EventModel implements Serializable {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActivityModel> activities  = new ArrayList<>();
 
+    //TODO: mudar de description para name
     @Schema(description = "Descrição do evento")
     @Column(name = "description")
     private String description;

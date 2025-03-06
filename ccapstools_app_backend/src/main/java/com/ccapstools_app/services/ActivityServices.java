@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.ccapstools_app.data.dto.ActivityDTO;
 import com.ccapstools_app.data.vo.ActivityVO;
-import com.ccapstools_app.data.vo.SpeakerVO;
 import com.ccapstools_app.exceptions.ResourceNotFoundException;
 import com.ccapstools_app.mapper.DozerMapper;
 import com.ccapstools_app.models.event.ActivityModel;
