@@ -77,7 +77,7 @@ public class SpeakerServices {
       
         try {
             // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
-            UserDTO userDTO = userService.getById(speakerVO.getUser());
+            UserDTO userDTO = userService.getById(speakerVO.getUser().getId());
             UserModel user = DozerMapper.parseObject(userDTO, UserModel.class);
 
             // 🔥 Criar Speaker manualmente (sem DozerMapper no user)
@@ -115,7 +115,7 @@ public class SpeakerServices {
         // Atualiza apenas se houver um novo User associado
         if (updatedSpeakerVo.getUser() != null) {
             try {
-                UserDTO existingUserDTO = userService.getById(updatedSpeakerVo.getUser());
+                UserDTO existingUserDTO = userService.getById(updatedSpeakerVo.getUser().getId());
                 UserModel user = DozerMapper.parseObject(existingUserDTO, UserModel.class);
 
                 existingSpeaker.setUser(user);
