@@ -74,7 +74,7 @@ public class SpeakerServices {
         if (speakerVO.getUser() == null) {
             throw new IllegalArgumentException("ID do usuário no SpeakerVO não pode ser nulo");
         }
-
+      
         try {
             // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
             UserDTO userDTO = userService.getById(speakerVO.getUser());
@@ -117,6 +117,7 @@ public class SpeakerServices {
             try {
                 UserDTO existingUserDTO = userService.getById(updatedSpeakerVo.getUser());
                 UserModel user = DozerMapper.parseObject(existingUserDTO, UserModel.class);
+
                 existingSpeaker.setUser(user);
             } catch (ResourceNotFoundException e) {
                 logger.log(Level.WARNING, "Usuário não encontrado para o ID: {0}, mantendo usuário atual.",

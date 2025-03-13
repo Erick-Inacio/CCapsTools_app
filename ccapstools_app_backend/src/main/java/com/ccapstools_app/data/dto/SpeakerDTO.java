@@ -115,5 +115,4 @@ public class SpeakerDTO implements Serializable {
                 Objects.equals(user, other.user) &&
                 Objects.equals(socialMedia, other.socialMedia);
     }
-
 }
