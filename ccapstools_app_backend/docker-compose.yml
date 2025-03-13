@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:9.1.0
+    container_name: meu_banco
+    restart: always
+    environment:
+      MYSQL_DATABASE: meubanco
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: meu_app
+    ports:
+      - "8081:8081"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=${DATABASE_DOCKER_URL}
+      - SPRING_DATASOURCE_USERNAME=${DATABASE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DATABASE_PASSWORD}
+      - JWT_ISSUER_URI=${JWT_ISSUER_URI}
+      - FIREBASE_CREDENTIALS=/app/firebase-credentials.json
+    volumes:
+      - "A:/ChaveFirebaseCCapsTools/setec-front-firebase-adminsdk-fbsvc-be5768b1bc.json:/app/firebase-credentials.json"
+volumes:
+  mysql_data:

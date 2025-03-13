@@ -1,21 +1,20 @@
 package com.ccapstools_app.data.dto;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-import com.ccapstools_app.utils.enums.Relationship;
+public class SpeakerDTO implements Serializable {
 
-public class SpeakerDTO implements Serializable{
-    
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private Relationship Relationship;
     private String company;
     private String position;
     private String bio;
     private UserDTO user;
-    private String socialMedia;
+    private Map<?, String> socialMedia = new HashMap<>();
 
     public SpeakerDTO() {
     }
@@ -26,14 +25,6 @@ public class SpeakerDTO implements Serializable{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Relationship getRelationship() {
-        return Relationship;
-    }
-
-    public void setRelationship(Relationship relationship) {
-        Relationship = relationship;
     }
 
     public String getCompany() {
@@ -68,20 +59,38 @@ public class SpeakerDTO implements Serializable{
         this.user = user;
     }
 
-    public String getSocialMedia() {
+    public Map<?, String> getSocialMedia() {
         return socialMedia;
     }
 
-    public void setSocialMedia(String socialMedia) {
-        this.socialMedia = socialMedia;
+    public void setSocialMedia(Map<?, String> socialMedia) {
+        if(socialMedia == null || socialMedia.isEmpty()) {
+            this.socialMedia = null;
+            return;
+        }
+        convertSocialMediaEnumToString();
     }
 
+    // Métodos
+
+    // Para converter SocialMediaEnum para String antes de enviar para o front
+    private void convertSocialMediaEnumToString() {
+        if (this.socialMedia != null) {
+            Map<String, String> convertedMap = new HashMap<>();
+            for (Map.Entry<?, String> entry : this.socialMedia.entrySet()) {
+                convertedMap.put(entry.getKey().toString(), entry.getValue()); // Converte qualquer tipo de chave para
+                                                                               // String
+            }
+            this.socialMedia = convertedMap;
+        }
+    }
+
+    //Serialização
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((Relationship == null) ? 0 : Relationship.hashCode());
         result = prime * result + ((company == null) ? 0 : company.hashCode());
         result = prime * result + ((position == null) ? 0 : position.hashCode());
         result = prime * result + ((bio == null) ? 0 : bio.hashCode());
@@ -100,17 +109,10 @@ public class SpeakerDTO implements Serializable{
         }
         SpeakerDTO other = (SpeakerDTO) obj;
         return Objects.equals(id, other.id) &&
-               Relationship == other.Relationship &&
-               Objects.equals(company, other.company) &&
-               Objects.equals(position, other.position) &&
-               Objects.equals(bio, other.bio) &&
-               Objects.equals(user, other.user) &&
-               Objects.equals(socialMedia, other.socialMedia);
+                Objects.equals(company, other.company) &&
+                Objects.equals(position, other.position) &&
+                Objects.equals(bio, other.bio) &&
+                Objects.equals(user, other.user) &&
+                Objects.equals(socialMedia, other.socialMedia);
     }
-
-    
-    
-    
-    
-
 }

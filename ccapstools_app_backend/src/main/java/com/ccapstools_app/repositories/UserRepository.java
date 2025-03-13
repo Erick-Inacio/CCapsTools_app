@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ccapstools_app.models.User;
+import com.ccapstools_app.models.users.UserModel;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserModel, Long> {
 
-    Optional<User> findByUid(String uid);
+    Optional<UserModel> getIdByUid(String uid);
 }

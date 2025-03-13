@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,7 @@ import com.google.firebase.FirebaseOptions;
 @Configuration
 public class FirebaseConfig {
 
-    Logger logger = Logger.getLogger(FirebaseConfig.class.getName());
+    // Logger logger = Logger.getLogger(FirebaseConfig.class.getName());
 
     @Bean
     FirebaseApp firebaseApp() throws IOException {
