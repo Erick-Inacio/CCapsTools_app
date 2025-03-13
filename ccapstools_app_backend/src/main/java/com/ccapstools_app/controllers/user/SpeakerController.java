@@ -111,8 +111,8 @@ public class SpeakerController {
     // Personalized HTTP verbs
     // get by userId
     @Operation(summary = "Busca um palestrante pelo id do usuário", description = "Retorna um Palestrante cadastrado no sistema")
-    @GetMapping(value = "/findByUser", params = { "userId" }, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SpeakerDTO> findSpeakerByUserId(@RequestParam Long userId) {
+    @GetMapping(value = "/getByUser", params = { "userId" }, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SpeakerDTO> getByUser(@RequestParam Long userId) {
 
         if (userId == null) {
             return ResponseEntity.badRequest().build();
