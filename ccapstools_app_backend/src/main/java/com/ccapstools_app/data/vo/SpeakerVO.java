@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import com.ccapstools_app.models.User;
 import com.ccapstools_app.utils.enums.SocialMediaEnum;
 
 public class SpeakerVO implements Serializable {
