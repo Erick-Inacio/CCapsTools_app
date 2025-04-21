@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -120,6 +121,23 @@ public class SpeakerController {
 
         try {
             return ResponseEntity.ok(speakerServices.findSpeakerByUserId(userId));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    //TODO: testar esse endpoint
+    //put isApproved
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Atualiza o status do palestrante", description = "Atualiza o status do Palestrante no sistema")
+    @PutMapping(value = "/putIsApproved", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SpeakerDTO> putIsApproved(@RequestBody SpeakerVO speakerDTO) {
+        if (speakerDTO == null || speakerDTO.getAdminApproved() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            return ResponseEntity.ok(speakerServices.updateSpeakerIsApproved(speakerDTO));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

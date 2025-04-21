@@ -16,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.MapKeyEnumerated;
 import jakarta.persistence.OneToOne;
@@ -39,6 +40,10 @@ public class SpeakerModel implements Serializable {
 
     @Column(name = "bio")
     private String bio;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_aproved_uid", referencedColumnName = "uid", nullable = true)
+    private UserModel adminAproved;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
@@ -110,6 +115,14 @@ public class SpeakerModel implements Serializable {
         socialMedia.remove(platform);
     }
 
+    public UserModel getAdminAproved() {
+        return adminAproved;
+    }
+
+    public void setAdminAproved(UserModel adminAproved) {
+        this.adminAproved = adminAproved;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -118,26 +131,28 @@ public class SpeakerModel implements Serializable {
         result = prime * result + ((company == null) ? 0 : company.hashCode());
         result = prime * result + ((position == null) ? 0 : position.hashCode());
         result = prime * result + ((bio == null) ? 0 : bio.hashCode());
+        result = prime * result + ((adminAproved == null) ? 0 : adminAproved.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
         result = prime * result + ((socialMedia == null) ? 0 : socialMedia.hashCode());
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        SpeakerModel other = (SpeakerModel) obj;
-        return Objects.equals(id, other.id) &&
-               Objects.equals(company, other.company) &&
-               Objects.equals(position, other.position) &&
-               Objects.equals(bio, other.bio) &&
-               Objects.equals(user, other.user) &&
-               Objects.equals(socialMedia, other.socialMedia);
+        SpeakerModel that = (SpeakerModel) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(company, that.company) &&
+                Objects.equals(position, that.position) &&
+                Objects.equals(bio, that.bio) &&
+                Objects.equals(adminAproved, that.adminAproved) &&
+                Objects.equals(user, that.user) &&
+                Objects.equals(socialMedia, that.socialMedia);
     }
 
 }

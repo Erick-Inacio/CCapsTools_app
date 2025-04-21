@@ -33,11 +33,11 @@ public class UserModel implements Serializable {
     @Column(name = "uid", unique = true)
     private String uid;
 
-    @Schema(description = "Nome do usuário", maxLength=150)
+    @Schema(description = "Nome do usuário", maxLength = 150)
     @Column(name = "name")
     private String name;
 
-    @Schema(description = "Email do usuário", maxLength=100)
+    @Schema(description = "Email do usuário", maxLength = 100)
     @Column(name = "email", unique = true)
     private String email;
 
@@ -130,8 +130,10 @@ public class UserModel implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         UserModel user = (UserModel) o;
         return Objects.equals(id, user.id) &&
                 Objects.equals(uid, user.uid) &&

@@ -16,6 +16,7 @@ public class SpeakerVO implements Serializable {
     private String position;
     private String bio;
     private UserVO user;
+    private String adminApproved;
     private Map<SocialMediaEnum, String> socialMedia = new HashMap<>();
 
     public SpeakerVO() {
@@ -61,6 +62,14 @@ public class SpeakerVO implements Serializable {
         this.user = user;
     }
 
+    public String getAdminApproved() {
+        return adminApproved;
+    }
+
+    public void setAdminApproved(String adminApproved) {
+        this.adminApproved = adminApproved;
+    }
+
     public Map<SocialMediaEnum, String> getSocialMedia() {
         return socialMedia;
     }
@@ -78,27 +87,22 @@ public class SpeakerVO implements Serializable {
         result = prime * result + ((position == null) ? 0 : position.hashCode());
         result = prime * result + ((bio == null) ? 0 : bio.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((adminApproved == null) ? 0 : adminApproved.hashCode());
         result = prime * result + ((socialMedia == null) ? 0 : socialMedia.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
         SpeakerVO other = (SpeakerVO) obj;
-        return Objects.equals(id, other.id)
-                && Objects.equals(company, other.company)
-                && Objects.equals(position, other.position)
-                && Objects.equals(bio, other.bio)
-                && Objects.equals(user, other.user)
-                && Objects.equals(socialMedia, other.socialMedia);
+        return Objects.equals(id, other.id) &&
+               Objects.equals(company, other.company) &&
+               Objects.equals(position, other.position) &&
+               Objects.equals(bio, other.bio) &&
+               Objects.equals(user, other.user) &&
+               Objects.equals(adminApproved, other.adminApproved) &&
+               Objects.equals(socialMedia, other.socialMedia);
     }
-
-    
-    
 }

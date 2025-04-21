@@ -14,6 +14,7 @@ public class SpeakerDTO implements Serializable {
     private String position;
     private String bio;
     private UserDTO user;
+    private String adminApproved;
     private Map<?, String> socialMedia = new HashMap<>();
 
     public SpeakerDTO() {
@@ -59,12 +60,20 @@ public class SpeakerDTO implements Serializable {
         this.user = user;
     }
 
+    public String getAdminApproved() {
+        return adminApproved;
+    }
+
+    public void setAdminApproved(String adminApproved) {
+        this.adminApproved = adminApproved;
+    }
+
     public Map<?, String> getSocialMedia() {
         return socialMedia;
     }
 
     public void setSocialMedia(Map<?, String> socialMedia) {
-        if(socialMedia == null || socialMedia.isEmpty()) {
+        if (socialMedia == null || socialMedia.isEmpty()) {
             this.socialMedia = null;
             return;
         }
@@ -85,7 +94,6 @@ public class SpeakerDTO implements Serializable {
         }
     }
 
-    //Serialização
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -95,24 +103,25 @@ public class SpeakerDTO implements Serializable {
         result = prime * result + ((position == null) ? 0 : position.hashCode());
         result = prime * result + ((bio == null) ? 0 : bio.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((adminApproved == null) ? 0 : adminApproved.hashCode());
         result = prime * result + ((socialMedia == null) ? 0 : socialMedia.hashCode());
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object o) {
+        if (this == o)
             return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (o == null || getClass() != o.getClass())
             return false;
-        }
-        SpeakerDTO other = (SpeakerDTO) obj;
-        return Objects.equals(id, other.id) &&
-                Objects.equals(company, other.company) &&
-                Objects.equals(position, other.position) &&
-                Objects.equals(bio, other.bio) &&
-                Objects.equals(user, other.user) &&
-                Objects.equals(socialMedia, other.socialMedia);
+        SpeakerDTO that = (SpeakerDTO) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(company, that.company) &&
+                Objects.equals(position, that.position) &&
+                Objects.equals(bio, that.bio) &&
+                Objects.equals(user, that.user) &&
+                Objects.equals(adminApproved, that.adminApproved) &&
+                Objects.equals(socialMedia, that.socialMedia);
     }
+
 }

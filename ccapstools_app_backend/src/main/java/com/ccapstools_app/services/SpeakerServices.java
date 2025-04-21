@@ -74,7 +74,7 @@ public class SpeakerServices {
         if (speakerVO.getUser() == null) {
             throw new IllegalArgumentException("ID do usuário no SpeakerVO não pode ser nulo");
         }
-      
+
         try {
             // 🔥 Buscar o usuário no banco de dados e converter para entidade `User`
             UserDTO userDTO = userService.getById(speakerVO.getUser().getId());
@@ -177,4 +177,33 @@ public class SpeakerServices {
         }
     }
 
+    public SpeakerDTO updateSpeakerIsApproved(SpeakerVO speakerVO) {
+        if (speakerVO == null || speakerVO.getId() == null) {
+            throw new IllegalArgumentException("speakerVO or Speaker ID cannot be null");
+        }
+
+        SpeakerModel speaker = speakerRepository.findById(speakerVO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Speaker not found for ID: " + speakerVO.getId()));
+
+        String adminUid = speakerVO.getAdminApproved();
+        if (adminUid == null) {
+            throw new IllegalArgumentException("Admin UID cannot be null");
+        }
+
+        Long adminId = userService.getIdByUid(adminUid);
+        if (adminId == null) {
+            throw new ResourceNotFoundException("Admin not found for UID: " + adminUid);
+        }
+
+        UserModel admin = DozerMapper.parseObject(userService.getById(adminId), UserModel.class);
+        speaker.setAdminAproved(admin);
+
+        try {
+            SpeakerModel updatedSpeaker = speakerRepository.save(speaker);
+            return DozerMapper.parseObject(updatedSpeaker, SpeakerDTO.class);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error updating Speaker", e);
+            throw new DatabaseException("Error updating Speaker in the database.", e);
+        }
+    }
 }
